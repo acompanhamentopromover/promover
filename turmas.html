@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promover - Reforço Escolar</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset básico e Variáveis */
+        :root {
+            --bg-color: #F8F9FA;
+            --text-color: #2D3748;
+            --border-color: #000000;
+            
+            /* Cores inspiradas na sua imagem de referência */
+            --blue-pastel: #D0EFFF;
+            --pink-pastel: #FFE5EC;
+            --yellow-pastel: #FFF6D6;
+            --green-pastel: #E0F5E9;
+            --blue-btn: #2B9AF3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container principal - Limita a largura em telas grandes para manter o visual de app */
+        .container {
+            width: 100%;
+            max-width: 480px; /* Simula a largura de um mobile mesmo no PC */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        /* Cabeçalho */
+        header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #555;
+            font-weight: 400;
+        }
+
+        /* Grid de Botões/Cards */
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Estilo dos Cards (Botões) */
+        .grade-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 20px 24px;
+            border-radius: 16px;
+            border: 2px solid var(--border-color);
+            background-color: white;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: 4px 4px 0px var(--border-color); /* Sombra sólida estilo cartoon */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Interatividade */
+        .grade-card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--border-color);
+        }
+
+        /* Conteúdo interno do card */
+        .card-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-box {
+            font-size: 1.8rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .arrow-icon {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        /* Variações de Cores (Classes modificadoras) */
+        .bg-blue { background-color: var(--blue-pastel); }
+        .bg-pink { background-color: var(--pink-pastel); }
+        .bg-yellow { background-color: var(--yellow-pastel); }
+        .bg-green { background-color: var(--green-pastel); }
+
+        /* Rodapé simples */
+        footer {
+            margin-top: auto;
+            padding-top: 40px;
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Promover<br><span style="font-size: 1.2rem; font-weight: 500;">Reforço Escolar</span></h1>
+            <p class="subtitle">Escolha sua série para começar a estudar</p>
+        </header>
+
+        <main class="menu-grid">
+            <a href="6ano.html" class="grade-card bg-blue">
+                <div class="card-content">
+                    <span class="icon-box">🚀</span>
+                    <span class="card-title">6º Ano</span>
+                </div>
+                <span class="arrow-icon">➜</span>
+            </a>
+
+            <a href="7ano.html" class="grade-card bg-pink">
+                <div class="card-content">
+                    <span class="icon-box">📚</span>
+                    <span class="card-title">7º Ano</span>
+                </div>
+                <span class="arrow-icon">➜</span>
+            </a>
+
+            <a href="8ano.html" class="grade-card bg-yellow">
+                <div class="card-content">
+                    <span class="icon-box">💡</span>
+                    <span class="card-title">8º Ano</span>
+                </div>
+                <span class="arrow-icon">➜</span>
+            </a>
+
+            <a href="9ano.html" class="grade-card bg-green">
+                <div class="card-content">
+                    <span class="icon-box">🎓</span>
+                    <span class="card-title">9º Ano</span>
+                </div>
+                <span class="arrow-icon">➜</span>
+            </a>
+        </main>
+
+        <footer>
+            © 2026 Promover Educação
+        </footer>
+    </div>
+
+</body>
+</html>
