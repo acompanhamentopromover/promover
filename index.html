@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Promover - Reforço Escolar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILO NEO-BRUTALISTA / POP (Mantido) --- */
+        :root {
+            --primary: #4a90e2;    
+            --accent: #f39c12;     
+            --bg-body: #f4f4f4;    
+            --surface: #ffffff;
+            --border-color: #000000;
+            --border-width: 2px;
+            --shadow-hard: 4px 4px 0px 0px #000000;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body { background-color: var(--bg-body); color: #000; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* Header */
+        header {
+            background: var(--surface);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: var(--border-width) solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img { height: 50px; }
+
+        /* Navegação simplificada */
+        nav ul { display: flex; align-items: center; gap: 1.5rem; }
+
+        /* Botão Sessão do Aluno */
+        .btn-aluno {
+            background-color: var(--primary);
+            color: #fff !important;
+            padding: 10px 20px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 50px;
+            font-weight: 800;
+            box-shadow: var(--shadow-hard);
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-aluno:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4rem 5%;
+            gap: 2rem;
+        }
+
+        .hero-text { max-width: 50%; }
+
+        .tag {
+            background: #ffeb3b;
+            display: inline-block;
+            padding: 5px 15px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            box-shadow: 2px 2px 0px 0px #000;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #000;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            text-decoration: underline;
+            text-decoration-thickness: 4px;
+            text-decoration-color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .cta-group { display: flex; gap: 15px; }
+
+        /* Botão Principal (WhatsApp) */
+        .btn-main {
+            background: #25D366; /* Verde WhatsApp */
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hard);
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-main:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 0 #000;
+        }
+
+        .hero-img img {
+            max-width: 100%;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 8px 8px 0px 0px #000;
+        }
+
+        /* Serviços */
+        .servicos {
+            padding: 4rem 5%;
+            background: #fff;
+            border-top: var(--border-width) solid var(--border-color);
+        }
+
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .section-header p { font-size: 1.1rem; color: #555; max-width: 600px; margin: 0 auto; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #fff;
+            padding: 2rem;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hard);
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 10px;
+            border-bottom: var(--border-width) solid var(--border-color);
+        }
+        
+        .card.blue::before { background: #3498db; }
+        .card.red::before { background: #e74c3c; }
+        .card.green::before { background: #2ecc71; }
+        .card.purple::before { background: #9b59b6; }
+
+        .icon { font-size: 2.5rem; margin-bottom: 1rem; display: inline-block; }
+        .card h3 { margin-bottom: 0.5rem; font-weight: 800; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 1rem; }
+            nav ul { width: 100%; justify-content: center; } /* Centraliza o botão no mobile */
+            .hero { flex-direction: column-reverse; text-align: center; }
+            .hero-text { max-width: 100%; }
+            .cta-group { justify-content: center; flex-direction: column; }
+            .logo img { height: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">
+            <img src="logo.png" alt="Logo Projeto Promover">
+        </a>
+        
+        <nav>
+            <ul>
+                <li>
+                    <a href="/login-aluno" class="btn-aluno">
+                        <span>Sessão do Aluno</span>
+                        <span style="font-size: 1.2em;">🎓</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <div class="tag">⭐ Vagas Abertas 2026</div>
+                
+                <h1>Transforme a dificuldade do seu filho em <br><span>Confiança!</span></h1>
+                
+                <p>O Projeto Promover ajuda alunos do Ensino Fundamental II (6º ao 9º) a recuperarem o gosto pelos estudos. Método personalizado, sem estresse e com resultados reais.</p>
+                
+                <div class="cta-group">
+                    <a href="https://wa.me/5585992621003?text=Vi%20o%20site%20e%20gostaria%20de%20pedir%20informa%C3%A7%C3%B5es" target="_blank" class="btn-main">
+                        📱 Fale Conosco
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-img">
+                <img src="https://placehold.co/600x400/ffeaa7/000000?text=Crian%C3%A7a+Feliz+Estudando" alt="Aluno feliz estudando">
+            </div>
+        </section>
+
+        <section class="servicos">
+            <div class="section-header">
+                <h2>Por que os pais escolhem o Promover?</h2>
+                <p>Nós cuidamos do aprendizado para que você tenha tranquilidade.</p>
+            </div>
+
+            <div class="grid">
+                <div class="card blue">
+                    <span class="icon">📈</span>
+                    <h3>Melhora nas Notas</h3>
+                    <p>Foco nas dificuldades específicas para recuperar o desempenho escolar rapidamente.</p>
+                </div>
+                
+                <div class="card red">
+                    <span class="icon">🧘</span>
+                    <h3>Menos Estresse em Casa</h3>
+                    <p>Acabe com as brigas na hora da tarefa. Nós criamos a rotina de estudos ideal.</p>
+                </div>
+
+                <div class="card green">
+                    <span class="icon">🚀</span>
+                    <h3>Autonomia</h3>
+                    <p>Seu filho aprende a estudar sozinho e a se organizar melhor para as provas.</p>
+                </div>
+
+                <div class="card purple">
+                    <span class="icon">🎮</span>
+                    <h3>Aprender é Legal</h3>
+                    <p>Usamos gamificação para que estudar deixe de ser uma obrigação chata.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
