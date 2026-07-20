@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciclo de Estudos - Promover</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Biblioteca de Confetes para recompensas visuais -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Biblioteca Tone.js para efeitos sonoros do Pomodoro -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        :root {
+            /* Cores adaptadas para o tema de Neurociência e Foco */
+            --bg-color: #F8FAFC;
+            --text-color: #0F172A;
+            --border-color: #0F172A; /* Bordas pretas/escuras marcantes do template */
+            --white: #FFFFFF;
+            
+            --theme-light: #E0E7FF;
+            --theme-medium: #818CF8;
+            --theme-dark: #4338CA; /* Roxo profundo/Índigo */
+            --theme-contrast: #F59E0B; /* Laranja de destaque */
+            --theme-accent: #10B981; /* Verde esmeralda para sucesso */
+            --theme-text-active: #FFFFFF;
+            
+            --correct-bg: #D1FAE5;
+            --correct-border: #059669;
+            --wrong-bg: #FFE4E6;
+            --wrong-border: #BE123C;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+            padding-bottom: 100px;
+            background-image: linear-gradient(var(--theme-light) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--theme-light) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-6px); }
+            100% { transform: translateX(0); }
+        }
+        .shake-effect { animation: shake 0.4s ease-in-out; }
+        
+        @keyframes fadeIn { from {opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .pulse-effect { animation: pulse 1.5s infinite; display: inline-block; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.15); color: var(--theme-contrast); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); color: var(--theme-contrast); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-header { width: 100%; max-width: 600px; display: flex; justify-content: center; flex-direction: column; align-items: center; padding: 20px 0 10px 0; }
+        
+        .css-logo { font-size: 1.6rem; font-weight: 900; color: var(--white); text-transform: uppercase; letter-spacing: -1px; border: 3px solid var(--border-color); padding: 8px 20px; border-radius: 12px; background: var(--theme-dark); box-shadow: 4px 4px 0px var(--theme-contrast); text-align: center; margin-bottom: 15px; }
+        
+        h1 { font-size: 1.8rem; font-weight: 900; color: var(--text-color); text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); text-align: center; line-height: 1.2; }
+        .subtitle { font-size: 0.95rem; color: var(--theme-dark); font-weight: 600; text-align: center; margin-top: 5px;}
+        
+        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .toggle-container { background-color: var(--white); border: 2px solid var(--border-color); border-radius: 50px; padding: 4px; display: flex; margin-bottom: 10px; box-shadow: 3px 3px 0px var(--border-color); }
+        .toggle-btn {flex: 1; border: none; background: none; padding: 12px 0; border-radius: 40px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; color: var(--theme-dark); cursor: pointer; transition: all 0.3s ease; }
+        .toggle-btn.active { background-color: var(--theme-dark); color: var(--theme-text-active); box-shadow: 0px 2px 5px rgba(0,0,0,0.2); }
+        
+        .view-section { display: none; animation: fadeIn 0.4s ease; flex-direction: column; gap: 20px; }
+        
+        .input-group { position: relative; width: 100%; display: flex; gap: 10px; flex-wrap: wrap;}
+        .styled-input { flex: 1; min-width: 200px; padding: 15px 20px; border: 2px solid var(--border-color); border-radius: 12px; background-color: var(--white); font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-color); box-shadow: 4px 4px 0px var(--border-color); outline: none; transition: all 0.2s ease; }
+        .styled-input:focus { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--theme-contrast); border-color: var(--theme-dark); }
+        
+        .content-group {display: flex; flex-direction: column; gap: 12px; }
+        .section-badge { display: inline-block; padding: 8px 16px; background-color: var(--theme-dark); color: var(--white); font-size: 0.9rem; font-weight: 700; border-radius: 8px; border: 2px solid var(--border-color); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); text-transform: uppercase; align-self: flex-start; margin-bottom: 5px; }
+        .badge-orange { background-color: var(--theme-contrast); color: var(--text-color); }
+        .badge-green { background-color: var(--correct-border); }
+        
+        .theory-box { display: flex; flex-direction: column; padding: 20px; border-radius: 16px; background-color: var(--white); border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color); font-weight: 500; font-size: 0.95rem; line-height: 1.6; position: relative; overflow: hidden; gap: 15px; }
+        .theory-box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background-color: var(--theme-contrast); border-right: 2px solid var(--border-color); }
+        .theory-box h3 {font-size: 1.2rem; font-weight: 900; color: var(--theme-dark); margin-bottom: 5px; border-bottom: 2px solid var(--theme-light); padding-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+        
+        .highlight-box { background-color: #E0F2FE; border-left: 4px solid var(--theme-contrast); padding: 15px; border-radius: 6px; font-size: 0.9rem; color: #075985; font-weight: 600; }
+        .highlight-box.warning { background-color: #FEF2F2; border-left-color: #BE123C; color: #881337; }
+
+        .block-list { display: flex; flex-direction: column; gap: 15px; margin-top: 10px;}
+        
+        .cycle-block { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px; background-color: var(--white); border: 2px solid var(--border-color); border-radius: 12px; cursor: default; transition: all 0.2s ease; box-shadow: 3px 3px 0px rgba(0,0,0,0.1); }
+        .cycle-block.active-study { background-color: var(--correct-bg); border-color: var(--correct-border); box-shadow: 4px 4px 0px var(--correct-border); transform: translateX(10px); }
+        
+        .block-info { display: flex; align-items: center; gap: 15px; }
+        .block-number { width: 35px; height: 35px; border-radius: 8px; border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; flex-shrink: 0; background: var(--theme-light); color: var(--theme-dark); }
+        .active-study .block-number { background-color: var(--correct-border); color: white; border-color: var(--correct-border); }
+        
+        .block-title { font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text-color); }
+        
+        .btn-delete { background: var(--wrong-bg); color: var(--wrong-border); border: 2px solid var(--wrong-border); border-radius: 8px; width: 35px; height: 35px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .btn-delete:active { transform: translate(2px, 2px); box-shadow: none; }
+
+        .btn-action { width: 100%; padding: 18px; background-color: var(--theme-dark); color: white; border: 3px solid var(--border-color); border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0px var(--theme-contrast); transition: all 0.1s; text-transform: uppercase; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px;}
+        .btn-action:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--theme-contrast); }
+        .btn-action.success { background-color: var(--theme-accent); box-shadow: 4px 4px 0px var(--border-color); }
+        .btn-action.secondary { background-color: var(--white); color: var(--text-color); box-shadow: 4px 4px 0px var(--border-color); }
+        
+        /* UX: Toast Notificações Flutuantes */
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
+        .toast { background-color: var(--theme-dark); color: white; font-weight: 700; padding: 12px 24px; border-radius: 50px; border: 2px solid var(--border-color); box-shadow: 0px 4px 15px rgba(0,0,0,0.25); text-align: center; font-size: 0.95rem; animation: slideUpToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOutToast 0.3s forwards 2.7s; opacity: 0; }
+        .toast.success { background-color: var(--theme-accent); color: var(--text-color); }
+        .toast.warning { background-color: var(--wrong-border); }
+        @keyframes slideUpToast { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOutToast { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+        
+        /* UX: Botão de Pular Fase */
+        .btn-pom-skip { background: transparent; color: var(--theme-light); border-color: transparent; padding: 12px; border-radius: 50%; font-size: 1.2rem; box-shadow: none; display: flex; align-items: center; justify-content: center; }
+        .btn-pom-skip:hover { background: rgba(255,255,255,0.1); transform: scale(1.1); }
+        .break-mode .btn-pom-skip { color: #D1FAE5; }
+        .btn-pom-skip:active { transform: scale(0.95); box-shadow: none; }
+
+        .app-footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--bg-color); border-top: 3px solid var(--border-color); padding: 15px 20px; display: none; justify-content: center; z-index: 100; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+
+        .subject-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; margin-bottom: 5px;}
+        .chip-btn { background: var(--theme-light); color: var(--theme-dark); border: 2px solid var(--theme-dark); padding: 8px 14px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .chip-btn:hover, .chip-btn:active { transform: translateY(-2px); box-shadow: 3px 3px 0px var(--theme-dark); background: var(--theme-medium); color: white; }
+        
+        .pomodoro-card { background: var(--theme-dark); color: white; border-radius: 16px; padding: 25px 20px; border: 3px solid var(--border-color); box-shadow: 6px 6px 0px var(--theme-contrast); text-align: center; margin-bottom: 25px; display: none; transition: background 0.4s ease; position: relative; overflow: hidden;}
+        .pomodoro-card.break-mode { background: #059669; box-shadow: 6px 6px 0px #047857; }
+        .pomodoro-title { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--theme-light);}
+        .break-mode .pomodoro-title { color: #D1FAE5; }
+        .pomodoro-time { font-size: 4.5rem; font-weight: 900; line-height: 1; letter-spacing: 2px; margin: 10px 0; text-shadow: 3px 3px 0px rgba(0,0,0,0.3); font-variant-numeric: tabular-nums;}
+        .pomodoro-controls { display: flex; gap: 12px; justify-content: center; margin-top: 15px; }
+        .btn-pom { padding: 12px 24px; border-radius: 12px; font-weight: 900; border: 3px solid var(--border-color); cursor: pointer; transition: all 0.1s; text-transform: uppercase; font-family: 'Poppins', sans-serif; font-size: 0.95rem; }
+        .btn-pom-start { background: var(--theme-contrast); color: var(--text-color); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
+        .btn-pom-pause { background: var(--white); color: var(--text-color); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
+        .btn-pom:active { transform: translate(2px, 2px); box-shadow: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="logo-header">
+            <div class="css-logo"><span class="pulse-effect">🧠</span> PROMOVER</div>
+            <h1>NEUROCIÊNCIA NOS ESTUDOS</h1>
+            <p class="subtitle">8º e 9º ANO - CRIE SEU CICLO MESTRE</p>
+        </header>
+
+        <div class="toggle-container">
+            <button class="toggle-btn active" id="btnExp" onclick="setMode('explanation')">📚 Como Funciona</button>
+            <button class="toggle-btn" id="btnPrac" onclick="setMode('practice')">⚙️ Meu Ciclo</button>
+        </div>
+
+        <div id="viewExplanation" class="view-section" style="display: flex;">
+            
+            <div class="content-group">
+                <span class="section-badge badge-orange">O Problema</span>
+                <div class="theory-box">
+                    <h3>O Fim do Cronograma Fixo</h3>
+                    <p>A maioria dos alunos tenta fazer uma tabela: "Segunda = Matemática; Terça = História". A vida real não é assim!</p>
+                    <div class="highlight-box warning">
+                        <strong>O Risco:</strong> Se na segunda você ficou doente, você perdeu Matemática. Na terça, você tenta estudar a matéria atrasada e vira uma "bola de neve". O resultado? Você desiste.
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-group">
+                <span class="section-badge badge-green">A Solução</span>
+                <div class="theory-box" style="border-left-color: var(--theme-accent);">
+                    <h3>O Ciclo Contínuo</h3>
+                    <p>Em vez de dias da semana, organize suas matérias em uma <strong>sequência contínua</strong> (uma roda).</p>
+                    <ul style="margin-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+                        <li><strong>A Vantagem:</strong> O Ciclo nunca quebra. Se você só tem 1 hora hoje, estuda um bloco. Amanhã, continua de onde parou.</li>
+                        <li><strong>Regra da Intercalação:</strong> NUNCA coloque duas matérias iguais ou pesadas seguidas. Alterne Exatas e Humanas para não esgotar o cérebro.</li>
+                        <li><strong>Tempo Ideal:</strong> Faça cada bloco durar cerca de 50 minutos (2 Pomodoros de 25min).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="setMode('practice')">
+                Montar o meu Ciclo Agora 🚀
+            </button>
+        </div>
+
+        <div id="viewPractice" class="view-section">
+            <div style="background-color: var(--white); padding: 20px; border-radius: 12px; border: 3px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color);">
+                <h2 style="color:var(--theme-dark); font-weight:900; margin-bottom: 10px;">Configurar Blocos</h2>
+                <p style="color: #0F172A; font-size: 0.95rem; font-weight:600; margin-bottom: 15px;">
+                    Adicione as matérias na ordem que deseja estudar. Lembre-se de intercalar!
+                </p>
+                
+                <div class="input-group">
+                    <input type="text" id="subjectInput" class="styled-input" placeholder="Ex: Matemática (50 min)" maxlength="30" onkeypress="handleEnter(event)">
+                    <button class="btn-action" style="margin-top: 0; width: auto; padding: 15px 20px;" onclick="addBlock()">Adicionar</button>
+                </div>
+
+                <div class="subject-chips">
+                    <button class="chip-btn" onclick="addBlock('📐 Matemática')">+ Matemática</button>
+                    <button class="chip-btn" onclick="addBlock('📚 Português')">+ Português</button>
+                    <button class="chip-btn" onclick="addBlock('🧪 Ciências')">+ Ciências</button>
+                    <button class="chip-btn" onclick="addBlock('🌍 Geografia')">+ Geografia</button>
+                    <button class="chip-btn" onclick="addBlock('📜 História')">+ História</button>
+                    <button class="chip-btn" onclick="addBlock('🗣️ Inglês')">+ Inglês</button>
+                </div>
+            </div>
+
+            <div>
+                <div id="pomodoroCard" class="pomodoro-card">
+                    <div id="pomodoroPhase" class="pomodoro-title">Foco: Nenhuma matéria</div>
+                    <div id="pomodoroTime" class="pomodoro-time">25:00</div>
+                    <div class="pomodoro-controls">
+                        <button id="btnPomStart" class="btn-pom btn-pom-start" onclick="togglePomodoro()">INICIAR</button>
+                        <button class="btn-pom btn-pom-pause" onclick="resetPomodoro()">Zerar</button>
+                        <button class="btn-pom btn-pom-skip" onclick="skipTimerPhase()" title="Pular fase atual">⏭️</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+                    <h3 style="font-weight: 900; color: var(--theme-dark);">A Sua Roda de Estudos</h3>
+                    <span id="blockCount" style="font-size: 0.85rem; font-weight: bold; color: var(--theme-contrast);">0 Blocos</span>
+                </div>
+                
+                <div class="block-list" id="cycleList">
+                    <!-- Javascript vai renderizar os blocos aqui -->
+                </div>
+
+                <!-- Box que aparece quando não há blocos -->
+                <div id="emptyState" style="text-align: center; padding: 40px 20px; border: 2px dashed var(--theme-dark); border-radius: 12px; background: white; margin-top: 10px;">
+                    <span style="font-size: 2rem;">📝</span>
+                    <p style="font-weight: 600; color: var(--theme-dark); margin-top: 10px;">Seu ciclo está vazio.</p>
+                    <p style="font-size: 0.85rem; color: #64748B;">Comece adicionando uma matéria acima.</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 40px; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <button class="btn-action success" id="btnPlayCycle" onclick="advanceCycle()" style="display: none;">
+                    ▶ Marcar Bloco como Concluído
+                </button>
+                <button class="btn-action secondary" id="btnResetCycle" onclick="resetProgress()" style="display: none;">
+                    ↺ Reiniciar Progresso
+                </button>
+                <button class="btn-action" id="btnSyncCycle" onclick="generateSyncLink()" style="background-color: var(--theme-medium); border-color: var(--theme-dark); box-shadow: 4px 4px 0px var(--theme-dark); display: none;">
+                    📱 Salvar / Gerar Link de Sincronização
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UX: Container para Toasts Flutuantes -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        const STORAGE_KEY = 'promover_study_cycle';
+        const ACTIVE_INDEX_KEY = 'promover_active_block';
+        
+        // UX: Sincronização via Link (A "Mágica" para o Github Pages)
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedData = urlParams.get('sync');
+        if (sharedData) {
+            try {
+                // Descompacta e lê os dados vindos do link do celular/pc
+                const parsed = JSON.parse(decodeURIComponent(atob(sharedData)));
+                if (parsed.blocks && Array.isArray(parsed.blocks)) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed.blocks));
+                    localStorage.setItem(ACTIVE_INDEX_KEY, (parsed.index || 0).toString());
+                    // Limpa a URL na barra de endereços para ficar bonita novamente
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            } catch (e) {
+                console.error("Erro ao sincronizar dados", e);
+            }
+        }
+
+        let cycleBlocks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let activeBlockIndex = parseInt(localStorage.getItem(ACTIVE_INDEX_KEY)) || 0;
+
+        let pomodoroInterval;
+        let timeRemaining = 25 * 60; // 25 minutos
+        let isTimerRunning = false;
+        let isStudyPhase = true; 
+        const STUDY_TIME = 25 * 60;
+        const BREAK_TIME = 5 * 60;
+        let audioInitialized = false;
+
+        // UX: Inicializa o motor de áudio (Requer clique do usuário)
+        async function initAudio() {
+            if (!audioInitialized && window.Tone) {
+                await Tone.start();
+                audioInitialized = true;
+            }
+        }
+
+        // UX: Toca sons satisfatórios
+        function playSound(type) {
+            if (!audioInitialized || !window.Tone) return;
+            const synth = new Tone.Synth().toDestination();
+            if (type === 'studyEnd') {
+                synth.triggerAttackRelease("C5", "8n");
+                setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 150);
+                setTimeout(() => synth.triggerAttackRelease("G5", "4n"), 300);
+            } else if (type === 'breakEnd') {
+                synth.triggerAttackRelease("G4", "8n");
+                setTimeout(() => synth.triggerAttackRelease("C5", "4n"), 200);
+            }
+        }
+
+        function setMode(mode) {
+            const views = ['viewExplanation', 'viewPractice'];
+            views.forEach(v => document.getElementById(v).style.display = 'none');
+            
+            if(mode === 'explanation') {
+                document.getElementById('viewExplanation').style.display = 'flex';
+                document.getElementById('btnExp').classList.add('active');
+                document.getElementById('btnPrac').classList.remove('active');
+            } else if (mode === 'practice') {
+                document.getElementById('viewPractice').style.display = 'flex';
+                document.getElementById('btnExp').classList.remove('active');
+                document.getElementById('btnPrac').classList.add('active');
+                renderCycle();
+            }
+            window.scrollTo(0,0);
+        }
+
+        // UX: Novo sistema de Notificações estilo Toast
+        function showAlert(message, type = 'warning') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                if (container.contains(toast)) container.removeChild(toast);
+            }, 3000);
+        }
+
+        function handleEnter(e) {
+            if(e.key === 'Enter') addBlock();
+        }
+
+        function addBlock(presetSubject = null) {
+            const input = document.getElementById('subjectInput');
+            let subject = "";
+            
+            if (typeof presetSubject === 'string') {
+                subject = presetSubject;
+            } else {
+                subject = input.value.trim();
+            }
+            
+            if (!subject) {
+                showAlert("Digite o nome da matéria primeiro!");
+                return;
+            }
+
+            cycleBlocks.push(subject);
+            saveData();
+            input.value = '';
+            
+            // Reajusta o indice se foi o primeiro item e zera timer
+            if(cycleBlocks.length === 1) {
+                activeBlockIndex = 0;
+                resetPomodoro();
+            }
+            saveIndex();
+            
+            renderCycle();
+            triggerConfettiSmall();
+        }
+
+        // UX: Auto-scroll suave para o bloco ativo na lista
+        function scrollToActiveBlock() {
+            setTimeout(() => {
+                const activeEl = document.querySelector('.active-study');
+                if (activeEl) {
+                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        }
+
+        function removeBlock(index) {
+            cycleBlocks.splice(index, 1);
+            
+            // Ajusta o ponteiro visual caso apague o bloco ativo ou anterior a ele
+            if (activeBlockIndex >= cycleBlocks.length) {
+                activeBlockIndex = 0;
+            }
+            
+            saveData();
+            saveIndex();
+            renderCycle();
+        }
+
+        function advanceCycle() {
+            if (cycleBlocks.length === 0) return;
+            
+            // Efeito visual de recompensa
+            triggerConfetti();
+
+            // Avança circularmente
+            activeBlockIndex = (activeBlockIndex + 1) % cycleBlocks.length;
+            saveIndex();
+            renderCycle();
+            scrollToActiveBlock();
+        }
+
+        function resetProgress() {
+            activeBlockIndex = 0;
+            saveIndex();
+            renderCycle();
+            scrollToActiveBlock();
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cycleBlocks));
+        }
+
+        function saveIndex() {
+            localStorage.setItem(ACTIVE_INDEX_KEY, activeBlockIndex.toString());
+        }
+
+        function renderCycle() {
+            const list = document.getElementById('cycleList');
+            const emptyState = document.getElementById('emptyState');
+            const blockCount = document.getElementById('blockCount');
+            const btnPlay = document.getElementById('btnPlayCycle');
+            const btnReset = document.getElementById('btnResetCycle');
+            const btnSync = document.getElementById('btnSyncCycle');
+            const pomodoroCard = document.getElementById('pomodoroCard');
+            
+            list.innerHTML = '';
+            blockCount.textContent = cycleBlocks.length + (cycleBlocks.length === 1 ? ' Bloco' : ' Blocos');
+
+            if (cycleBlocks.length === 0) {
+                emptyState.style.display = 'block';
+                btnPlay.style.display = 'none';
+                btnReset.style.display = 'none';
+                btnSync.style.display = 'none';
+                pomodoroCard.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            btnPlay.style.display = 'flex';
+            btnReset.style.display = 'flex';
+            btnSync.style.display = 'flex';
+            pomodoroCard.style.display = 'block';
+            updatePomodoroUI();
+
+            cycleBlocks.forEach((subject, i) => {
+                const isActive = i === activeBlockIndex;
+                const blockDiv = document.createElement('div');
+                blockDiv.className = `cycle-block ${isActive ? 'active-study' : ''}`;
+                
+                blockDiv.innerHTML = `
+                    <div class="block-info">
+                        <div class="block-number">${i + 1}</div>
+                        <div class="block-title">
+                            ${subject}
+                            ${isActive ? '<span style="display:block; font-size:0.75rem; color:var(--correct-border); font-weight:800; margin-top:2px;">▶ ESTUDAR AGORA</span>' : ''}
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="removeBlock(${i})" title="Remover matéria">✕</button>
+                `;
+                list.appendChild(blockDiv);
+            });
+            
+            if (cycleBlocks.length > 0) scrollToActiveBlock();
+        }
+
+        async function togglePomodoro() {
+            await initAudio(); // Inicia o som após a primeira interação do aluno
+            
+            if (isTimerRunning) {
+                clearInterval(pomodoroInterval);
+                isTimerRunning = false;
+                document.getElementById('btnPomStart').textContent = "RETOMAR";
+            } else {
+                isTimerRunning = true;
+                document.getElementById('btnPomStart').textContent = "PAUSAR";
+                pomodoroInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function resetPomodoro() {
+            clearInterval(pomodoroInterval);
+            isTimerRunning = false;
+            isStudyPhase = true;
+            timeRemaining = STUDY_TIME;
+            document.getElementById('btnPomStart').textContent = "INICIAR";
+            document.getElementById('pomodoroCard').classList.remove('break-mode');
+            updatePomodoroUI();
+        }
+
+        // UX: Pula para o final do timer atual (útil para adiantar pausas)
+        function skipTimerPhase() {
+            if (cycleBlocks.length === 0) {
+                showAlert("Adicione uma matéria primeiro!");
+                return;
+            }
+            timeRemaining = 1;
+            if (!isTimerRunning) togglePomodoro(); 
+        }
+
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                updatePomodoroUI();
+            } else {
+                // Timer chegou a zero
+                clearInterval(pomodoroInterval);
+                isTimerRunning = false;
+                
+                if (isStudyPhase) {
+                    // Fim do bloco de estudo: Auto-Avança Roda!
+                    playSound('studyEnd');
+                    advanceCycle(); 
+                    
+                    isStudyPhase = false;
+                    timeRemaining = BREAK_TIME;
+                    document.getElementById('pomodoroCard').classList.add('break-mode');
+                    
+                    // Inicia a pausa automaticamente
+                    isTimerRunning = true;
+                    document.getElementById('btnPomStart').textContent = "PAUSAR";
+                    pomodoroInterval = setInterval(updateTimer, 1000);
+                    
+                    showAlert("Foco concluído! Iniciando pausa.", "success");
+                } else {
+                    // Fim da pausa: Prepara o próximo bloco
+                    playSound('breakEnd');
+                    triggerConfettiSmall();
+                    isStudyPhase = true;
+                    timeRemaining = STUDY_TIME;
+                    document.getElementById('pomodoroCard').classList.remove('break-mode');
+                    document.getElementById('btnPomStart').textContent = "INICIAR FOCO";
+                    
+                    showAlert("Pausa finalizada! Pronto para o próximo bloco.", "success");
+                }
+                updatePomodoroUI();
+            }
+        }
+
+        function updatePomodoroUI() {
+            const timeDisplay = document.getElementById('pomodoroTime');
+            const phaseDisplay = document.getElementById('pomodoroPhase');
+            
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const timeString = timeDisplay.textContent;
+            
+            if (cycleBlocks.length > 0) {
+                const currentSubj = cycleBlocks[activeBlockIndex];
+                if (isStudyPhase) {
+                    phaseDisplay.textContent = `Em Foco: ${currentSubj}`;
+                    // UX: Mostra o timer na aba do navegador
+                    document.title = `(${timeString}) ${currentSubj}`;
+                } else {
+                    phaseDisplay.textContent = `Pausa Ativa (Pós ${currentSubj})`;
+                    document.title = `(${timeString}) Pausa`;
+                }
+            } else {
+                document.title = "Ciclo de Estudos - Promover";
+            }
+        }
+
+        function triggerConfettiSmall() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 20,
+                    spread: 40,
+                    origin: { y: 0.8 },
+                    colors: ['#4338CA', '#F59E0B']
+                });
+            }
+        }
+
+        function triggerConfetti() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#10B981', '#059669', '#34D399', '#F59E0B', '#4338CA']
+                });
+            }
+        }
+
+        // UX: Gera um link copiável para levar o ciclo para outro aparelho
+        function generateSyncLink() {
+            if (cycleBlocks.length === 0) return;
+            
+            const data = { blocks: cycleBlocks, index: activeBlockIndex };
+            // Compacta os dados do aluno num formato seguro para colocar na URL (Base64)
+            const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+            const url = window.location.origin + window.location.pathname + '?sync=' + encoded;
+            
+            // Copia para a área de transferência (Funciona em todos os navegadores)
+            const el = document.createElement('textarea');
+            el.value = url;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            showAlert("✅ Link copiado! Envie/Cole no seu celular para continuar seus estudos lá.", "success");
+        }
+
+        // Init App
+        setMode('explanation');
+        
+    </script>
+</body>
+</html>
