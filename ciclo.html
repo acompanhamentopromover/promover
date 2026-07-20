@@ -148,8 +148,24 @@
         .pomodoro-card.break-mode { background: #059669; box-shadow: 6px 6px 0px #047857; }
         .pomodoro-title { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--theme-light);}
         .break-mode .pomodoro-title { color: #D1FAE5; }
-        .pomodoro-time { font-size: 4.5rem; font-weight: 900; line-height: 1; letter-spacing: 2px; margin: 10px 0; text-shadow: 3px 3px 0px rgba(0,0,0,0.3); font-variant-numeric: tabular-nums;}
-        .pomodoro-controls { display: flex; gap: 12px; justify-content: center; margin-top: 15px; }
+        
+        /* UX de Tempo: Configurações, Ajustes e Progresso */
+        .time-settings { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 15px; font-size: 0.85rem; color: white; }
+        .time-chip { background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s; font-weight: 600;}
+        .time-chip:hover { background: rgba(0,0,0,0.3); }
+        .time-chip.active { background: white; color: var(--theme-dark); font-weight: 900; border-color: white;}
+        .break-mode .time-chip.active { color: #059669; }
+        
+        .time-adjust-btn { background: rgba(0,0,0,0.15); border: none; color: white; border-radius: 8px; padding: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 800; transition: all 0.2s; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .time-adjust-btn:hover { background: rgba(0,0,0,0.25); transform: translateY(-1px); }
+        .time-adjust-btn:active { transform: translate(1px, 1px); box-shadow: none; }
+        
+        .progress-container { width: 100%; height: 12px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; margin: 15px 0; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.2);}
+        .progress-bar { height: 100%; background: var(--theme-contrast); width: 100%; transition: width 1s linear; border-radius: 10px;}
+        .break-mode .progress-bar { background: var(--correct-bg); }
+
+        .pomodoro-time { font-size: 4.5rem; font-weight: 900; line-height: 1; letter-spacing: 2px; margin: 0; text-shadow: 3px 3px 0px rgba(0,0,0,0.3); font-variant-numeric: tabular-nums;}
+        .pomodoro-controls { display: flex; gap: 12px; justify-content: center; margin-top: 5px; }
         .btn-pom { padding: 12px 24px; border-radius: 12px; font-weight: 900; border: 3px solid var(--border-color); cursor: pointer; transition: all 0.1s; text-transform: uppercase; font-family: 'Poppins', sans-serif; font-size: 0.95rem; }
         .btn-pom-start { background: var(--theme-contrast); color: var(--text-color); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
         .btn-pom-pause { background: var(--white); color: var(--text-color); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
@@ -225,7 +241,26 @@
             <div>
                 <div id="pomodoroCard" class="pomodoro-card">
                     <div id="pomodoroPhase" class="pomodoro-title">Foco: Nenhuma matéria</div>
-                    <div id="pomodoroTime" class="pomodoro-time">25:00</div>
+                    
+                    <!-- UX de Tempo: Opção de blocos maiores -->
+                    <div id="timeSettings" class="time-settings">
+                        <span style="opacity: 0.8; margin-right: 5px;">⏱ Duração:</span>
+                        <button class="time-chip active" onclick="setFocusTime(25, 5, this)">25m</button>
+                        <button class="time-chip" onclick="setFocusTime(50, 10, this)">50m</button>
+                    </div>
+
+                    <!-- UX de Tempo: Ajuste rápido (+5 e -5) -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                        <button class="time-adjust-btn" onclick="adjustTime(-5)" title="Remover 5 minutos">- 5m</button>
+                        <div id="pomodoroTime" class="pomodoro-time">25:00</div>
+                        <button class="time-adjust-btn" onclick="adjustTime(5)" title="Adicionar 5 minutos">+ 5m</button>
+                    </div>
+
+                    <!-- UX de Tempo: Barra de progresso visual -->
+                    <div class="progress-container">
+                        <div id="pomodoroProgress" class="progress-bar"></div>
+                    </div>
+
                     <div class="pomodoro-controls">
                         <button id="btnPomStart" class="btn-pom btn-pom-start" onclick="togglePomodoro()">INICIAR</button>
                         <button class="btn-pom btn-pom-pause" onclick="resetPomodoro()">Zerar</button>
@@ -296,8 +331,12 @@
         let timeRemaining = 25 * 60; // 25 minutos
         let isTimerRunning = false;
         let isStudyPhase = true; 
-        const STUDY_TIME = 25 * 60;
-        const BREAK_TIME = 5 * 60;
+        
+        // UX de Tempo: Variáveis dinâmicas para permitir mudança
+        let STUDY_TIME = 25 * 60;
+        let BREAK_TIME = 5 * 60;
+        let maxTime = 25 * 60; // Controle da barra de progresso
+        
         let audioInitialized = false;
 
         // UX: Inicializa o motor de áudio (Requer clique do usuário)
@@ -505,8 +544,33 @@
             isTimerRunning = false;
             isStudyPhase = true;
             timeRemaining = STUDY_TIME;
+            maxTime = STUDY_TIME;
             document.getElementById('btnPomStart').textContent = "INICIAR";
             document.getElementById('pomodoroCard').classList.remove('break-mode');
+            updatePomodoroUI();
+        }
+
+        // UX: Configura os tempos base do ciclo (25m ou 50m)
+        function setFocusTime(focusMins, breakMins, btnElement) {
+            if(isTimerRunning && !confirm("O cronômetro está rodando. Deseja reiniciar com o novo tempo?")) return;
+            
+            STUDY_TIME = focusMins * 60;
+            BREAK_TIME = breakMins * 60;
+            
+            // Atualiza o visual dos botões
+            document.querySelectorAll('.time-chip').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            
+            resetPomodoro();
+            showAlert(`Tempo ajustado para blocos de ${focusMins} min.`, "success");
+        }
+
+        // UX: Adiciona ou remove minutos rápidos sem zerar o cronômetro (+5m / -5m)
+        function adjustTime(minutes) {
+            timeRemaining += minutes * 60;
+            if (timeRemaining < 0) timeRemaining = 0;
+            // Expande a barra de progresso caso o aluno adicione muito tempo extra
+            if (timeRemaining > maxTime) maxTime = timeRemaining; 
             updatePomodoroUI();
         }
 
@@ -536,6 +600,7 @@
                     
                     isStudyPhase = false;
                     timeRemaining = BREAK_TIME;
+                    maxTime = BREAK_TIME;
                     document.getElementById('pomodoroCard').classList.add('break-mode');
                     
                     // Inicia a pausa automaticamente
@@ -550,6 +615,7 @@
                     triggerConfettiSmall();
                     isStudyPhase = true;
                     timeRemaining = STUDY_TIME;
+                    maxTime = STUDY_TIME;
                     document.getElementById('pomodoroCard').classList.remove('break-mode');
                     document.getElementById('btnPomStart').textContent = "INICIAR FOCO";
                     
@@ -562,6 +628,17 @@
         function updatePomodoroUI() {
             const timeDisplay = document.getElementById('pomodoroTime');
             const phaseDisplay = document.getElementById('pomodoroPhase');
+            const progress = document.getElementById('pomodoroProgress');
+            const timeSettings = document.getElementById('timeSettings');
+            
+            // Lógica UX: Esconde configuração de tempo enquanto foca para não distrair
+            if (timeSettings) {
+                timeSettings.style.display = (isTimerRunning || !isStudyPhase) ? 'none' : 'flex';
+            }
+
+            // Lógica UX: Atualiza a barra de Progresso visual
+            const pct = (timeRemaining / maxTime) * 100;
+            if (progress) progress.style.width = Math.max(0, Math.min(100, pct)) + '%';
             
             const minutes = Math.floor(timeRemaining / 60);
             const seconds = timeRemaining % 60;
