@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador Financeiro - Promover</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #F8FAFC;
+            --text-color: #0F172A;
+            --border-color: #0F172A;
+            --white: #FFFFFF;
+            
+            --theme-light: #E0E7FF;
+            --theme-medium: #818CF8;
+            --theme-dark: #4338CA;
+            --theme-contrast: #F59E0B; 
+            --theme-accent: #10B981; 
+            --theme-text-active: #FFFFFF;
+            
+            --pot-50-bg: #E0F2FE;
+            --pot-50-color: #0284C7;
+            
+            --pot-30-bg: #FFEDD5;
+            --pot-30-color: #EA580C;
+            
+            --pot-20-bg: #D1FAE5;
+            --pot-20-color: #059669;
+
+            --wrong-bg: #FFE4E6;
+            --wrong-border: #BE123C;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+            padding-bottom: 100px;
+            background-image: linear-gradient(var(--theme-light) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--theme-light) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        @keyframes fadeIn { from {opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .pulse-effect { animation: pulse 1.5s infinite; display: inline-block; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.15); color: var(--theme-accent); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); color: var(--theme-accent); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-header { width: 100%; max-width: 700px; display: flex; justify-content: center; flex-direction: column; align-items: center; padding: 20px 0 10px 0; }
+        
+        .css-logo { font-size: 1.6rem; font-weight: 900; color: var(--white); text-transform: uppercase; letter-spacing: -1px; border: 3px solid var(--border-color); padding: 8px 20px; border-radius: 12px; background: var(--theme-dark); box-shadow: 4px 4px 0px var(--theme-contrast); text-align: center; margin-bottom: 15px; }
+        
+        h1 { font-size: 1.8rem; font-weight: 900; color: var(--text-color); text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); text-align: center; line-height: 1.2; }
+        .subtitle { font-size: 0.95rem; color: var(--theme-dark); font-weight: 600; text-align: center; margin-top: 5px;}
+        
+        .container { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .toggle-container { background-color: var(--white); border: 2px solid var(--border-color); border-radius: 50px; padding: 4px; display: flex; margin-bottom: 10px; box-shadow: 3px 3px 0px var(--border-color); }
+        .toggle-btn {flex: 1; border: none; background: none; padding: 12px 0; border-radius: 40px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; color: var(--theme-dark); cursor: pointer; transition: all 0.3s ease; }
+        .toggle-btn.active { background-color: var(--theme-dark); color: var(--theme-text-active); box-shadow: 0px 2px 5px rgba(0,0,0,0.2); }
+        
+        .view-section { display: none; animation: fadeIn 0.4s ease; flex-direction: column; gap: 20px; }
+        
+        .content-group {display: flex; flex-direction: column; gap: 12px; }
+        .section-badge { display: inline-block; padding: 8px 16px; background-color: var(--theme-dark); color: var(--white); font-size: 0.9rem; font-weight: 700; border-radius: 8px; border: 2px solid var(--border-color); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); text-transform: uppercase; align-self: flex-start; margin-bottom: 5px; }
+        .badge-blue { background-color: var(--pot-50-color); }
+        .badge-orange { background-color: var(--pot-30-color); }
+        .badge-green { background-color: var(--pot-20-color); }
+        
+        .theory-box { display: flex; flex-direction: column; padding: 20px; border-radius: 16px; background-color: var(--white); border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color); font-weight: 500; font-size: 0.95rem; line-height: 1.6; position: relative; overflow: hidden; gap: 15px; }
+        .theory-box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background-color: var(--theme-dark); border-right: 2px solid var(--border-color); }
+        .theory-box.tb-blue::before { background-color: var(--pot-50-color); }
+        .theory-box.tb-orange::before { background-color: var(--pot-30-color); }
+        .theory-box.tb-green::before { background-color: var(--pot-20-color); }
+        
+        .theory-box h3 {font-size: 1.2rem; font-weight: 900; color: var(--theme-dark); margin-bottom: 5px; border-bottom: 2px solid var(--theme-light); padding-bottom: 5px;}
+        .highlight-box { background-color: #E0F2FE; border-left: 4px solid var(--pot-50-color); padding: 15px; border-radius: 6px; font-size: 0.9rem; color: #075985; font-weight: 600; }
+        .highlight-box.warning { background-color: #FEF2F2; border-left-color: #BE123C; color: #881337; }
+
+        .input-group { position: relative; width: 100%; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;}
+        .styled-input { flex: 1; min-width: 150px; padding: 15px 20px; border: 2px solid var(--border-color); border-radius: 12px; background-color: var(--white); font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-color); box-shadow: 4px 4px 0px var(--border-color); outline: none; transition: all 0.2s ease; }
+        .styled-input:focus { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--theme-contrast); border-color: var(--theme-dark); }
+        
+        select.styled-input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 16px; padding-right: 40px;}
+
+        .btn-action { padding: 15px 20px; background-color: var(--theme-dark); color: white; border: 3px solid var(--border-color); border-radius: 12px; font-size: 1rem; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0px var(--theme-contrast); transition: all 0.1s; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 10px;}
+        .btn-action:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--theme-contrast); }
+        .btn-action.success { background-color: var(--theme-accent); box-shadow: 4px 4px 0px var(--border-color); }
+        .btn-action.secondary { background-color: var(--white); color: var(--text-color); box-shadow: 4px 4px 0px var(--border-color); }
+        
+        .pots-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px; }
+        .pot-card { background: var(--white); border: 3px solid var(--border-color); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px; box-shadow: 4px 4px 0px rgba(0,0,0,0.1);}
+        
+        .pot-card.pot-50 { box-shadow: 4px 4px 0px var(--pot-50-color); border-color: var(--pot-50-color); }
+        .pot-card.pot-30 { box-shadow: 4px 4px 0px var(--pot-30-color); border-color: var(--pot-30-color); }
+        .pot-card.pot-20 { box-shadow: 4px 4px 0px var(--pot-20-color); border-color: var(--pot-20-color); background: var(--pot-20-bg); }
+
+        .pot-title { font-size: 1.1rem; font-weight: 900; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
+        .pot-50 .pot-title { color: var(--pot-50-color); }
+        .pot-30 .pot-title { color: var(--pot-30-color); }
+        .pot-20 .pot-title { color: var(--pot-20-color); }
+
+        .pot-amount { font-size: 1.6rem; font-weight: 900; color: var(--text-color); }
+        .pot-subtitle { font-size: 0.8rem; font-weight: 600; color: #64748B; margin-top: -5px;}
+
+        .progress-bg { width: 100%; height: 12px; background: #E2E8F0; border-radius: 10px; overflow: hidden; margin-top: 5px; border: 1px solid rgba(0,0,0,0.1);}
+        .progress-fill { height: 100%; width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px;}
+        .pot-50 .progress-fill { background: var(--pot-50-color); }
+        .pot-30 .progress-fill { background: var(--pot-30-color); }
+        .pot-20 .progress-fill { background: var(--pot-20-color); }
+        .progress-over { background: var(--wrong-border) !important; } /* Cor quando estoura o orçamento */
+
+        .transaction-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px;}
+        .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--white); border: 2px solid var(--border-color); border-radius: 12px; box-shadow: 3px 3px 0px rgba(0,0,0,0.05); }
+        .trans-info { display: flex; flex-direction: column; gap: 2px; }
+        .trans-title { font-weight: 700; font-size: 1rem; color: var(--text-color); }
+        .trans-cat { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; display: inline-block; align-self: flex-start;}
+        
+        .cat-tag-50 { background: var(--pot-50-bg); color: var(--pot-50-color); }
+        .cat-tag-30 { background: var(--pot-30-bg); color: var(--pot-30-color); }
+        .cat-tag-20 { background: var(--pot-20-bg); color: var(--pot-20-color); }
+
+        .trans-value { font-weight: 900; font-size: 1.1rem; }
+        .val-negative { color: var(--wrong-border); }
+        .val-positive { color: var(--pot-20-color); }
+
+        .btn-delete { background: var(--wrong-bg); color: var(--wrong-border); border: 2px solid var(--wrong-border); border-radius: 8px; width: 35px; height: 35px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;}
+        .btn-delete:active { transform: translate(2px, 2px); box-shadow: none; }
+
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; width: 90%; max-width: 400px;}
+        .toast { background-color: var(--theme-dark); color: white; font-weight: 700; padding: 15px 24px; border-radius: 12px; border: 2px solid var(--border-color); box-shadow: 0px 8px 20px rgba(0,0,0,0.3); text-align: center; font-size: 0.95rem; animation: slideUpToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOutToast 0.4s forwards 3s; opacity: 0; }
+        .toast.success { background-color: var(--theme-accent); color: var(--text-color); }
+        .toast.warning { background-color: var(--wrong-bg); color: var(--wrong-border); border-color: var(--wrong-border);}
+        @keyframes slideUpToast { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOutToast { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="logo-header">
+            <div class="css-logo"><span class="pulse-effect">💰</span> PROMOVER</div>
+            <h1>GERENCIADOR FINANCEIRO</h1>
+            <p class="subtitle">8º e 9º ANO - O MAPA DO SEU DINHEIRO</p>
+        </header>
+
+        <div class="toggle-container">
+            <button class="toggle-btn active" id="btnExp" onclick="setMode('explanation')">📚 A Regra</button>
+            <button class="toggle-btn" id="btnPrac" onclick="setMode('practice')">💵 Meu Dinheiro</button>
+        </div>
+
+        <div id="viewExplanation" class="view-section" style="display: flex;">
+            
+            <div class="content-group">
+                <span class="section-badge badge-blue">O Método</span>
+                <div class="theory-box tb-blue">
+                    <h3>A Regra 50-30-20</h3>
+                    <p>O segredo para nunca faltar dinheiro é dar um destino a ele assim que ele cai na sua mão, dividindo em 3 potes:</p>
+                    <ul style="margin-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+                        <li><strong>50% Necessidades:</strong> O que você precisa para sobreviver (transporte, lanche da escola, ajuda em casa).</li>
+                        <li><strong>30% Desejos:</strong> O que você quer, mas não precisa (jogos, roupas novas, sair com amigos). Não passe desse limite!</li>
+                        <li><strong>20% O Seu Futuro:</strong> O pote intocável. Serve para montar sua reserva de emergência e começar a investir.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-group">
+                <span class="section-badge badge-green">O Segredo de Ouro</span>
+                <div class="theory-box tb-green">
+                    <h3>Pague-se Primeiro!</h3>
+                    <p>O erro comum é gastar e dizer: <em>"O que sobrar no fim do mês eu guardo pro futuro"</em>. A verdade é que <strong>nunca sobra!</strong></p>
+                    <div class="highlight-box">
+                        <strong>A Estratégia:</strong> No dia que receber a mesada/salário, a primeira coisa a fazer é separar os 20% do Futuro. Você vive apenas com o que sobrou.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-group">
+                <span class="section-badge badge-orange">O Perigo</span>
+                <div class="theory-box tb-orange">
+                    <h3>O Dinheiro Invisível</h3>
+                    <p>Pagar com Pix ou Cartão tira a "dor" de entregar o dinheiro físico. Seu cérebro acha que não gastou nada, fazendo você gastar o triplo por impulso. Anote tudo no app!</p>
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="setMode('practice')">
+                Acessar Meus Potes 🚀
+            </button>
+        </div>
+
+        <div id="viewPractice" class="view-section">
+            
+            <!-- Setup de Renda -->
+            <div style="background-color: var(--white); padding: 20px; border-radius: 16px; border: 3px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color);">
+                <h2 style="color:var(--theme-dark); font-weight:900; margin-bottom: 5px;">Sua Renda do Mês</h2>
+                <p style="color: #64748B; font-size: 0.85rem; font-weight:600; margin-bottom: 15px;">
+                    Quanto você vai receber este mês? (Mesada, bico, jovem aprendiz).
+                </p>
+                
+                <div class="input-group">
+                    <span style="font-weight: 900; font-size: 1.2rem; color: var(--text-color);">R$</span>
+                    <input type="number" id="incomeInput" class="styled-input" placeholder="0,00" step="10" min="0" onchange="updateIncome()">
+                </div>
+            </div>
+
+            <!-- Dashboard dos Potes -->
+            <h3 style="font-weight: 900; color: var(--theme-dark); margin-top: 10px;">Distribuição Automática</h3>
+            <div class="pots-container">
+                <!-- Pote 50 -->
+                <div class="pot-card pot-50">
+                    <div class="pot-title">
+                        Necessidades <span style="background:var(--pot-50-color); color:white; padding: 2px 8px; border-radius: 20px; font-size:0.8rem;">50%</span>
+                    </div>
+                    <div>
+                        <div class="pot-amount" id="amt-50">R$ 0,00</div>
+                        <div class="pot-subtitle" id="left-50">Disponível: R$ 0,00</div>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill" id="bar-50"></div></div>
+                </div>
+
+                <!-- Pote 30 -->
+                <div class="pot-card pot-30">
+                    <div class="pot-title">
+                        Desejos <span style="background:var(--pot-30-color); color:white; padding: 2px 8px; border-radius: 20px; font-size:0.8rem;">30%</span>
+                    </div>
+                    <div>
+                        <div class="pot-amount" id="amt-30">R$ 0,00</div>
+                        <div class="pot-subtitle" id="left-30">Disponível: R$ 0,00</div>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill" id="bar-30"></div></div>
+                </div>
+
+                <!-- Pote 20 (Destaque) -->
+                <div class="pot-card pot-20">
+                    <div class="pot-title">
+                        O Seu Futuro <span style="background:var(--pot-20-color); color:white; padding: 2px 8px; border-radius: 20px; font-size:0.8rem;">20%</span>
+                    </div>
+                    <div>
+                        <div class="pot-amount" id="amt-20">R$ 0,00</div>
+                        <div class="pot-subtitle" id="left-20">Guardado: R$ 0,00</div>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill" id="bar-20"></div></div>
+                </div>
+            </div>
+
+            <!-- Formulário de Nova Transação -->
+            <div style="background-color: var(--bg-color); padding: 20px; border-radius: 16px; border: 2px dashed var(--theme-dark); margin-top: 10px;">
+                <h3 style="font-weight: 900; color: var(--theme-dark); margin-bottom: 15px;">Novo Lançamento</h3>
+                
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <input type="text" id="transDesc" class="styled-input" placeholder="O que foi? (Ex: Lanche, Jogo)" maxlength="30">
+                </div>
+                
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <select id="transCategory" class="styled-input" style="flex: 2;">
+                        <option value="50">🔴 Gasto Necessário (Pote 50%)</option>
+                        <option value="30">🟡 Gasto com Desejo (Pote 30%)</option>
+                        <option value="20">🟢 Guardar pro Futuro (Pote 20%)</option>
+                    </select>
+                    <input type="number" id="transValue" class="styled-input" placeholder="R$" step="1" min="0" style="flex: 1;">
+                </div>
+
+                <button class="btn-action success" style="width: 100%;" onclick="addTransaction()">+ Registrar</button>
+            </div>
+
+            <!-- Lista de Histórico -->
+            <h3 style="font-weight: 900; color: var(--text-color); margin-top: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px;">Extrato Mensal</h3>
+            
+            <div id="emptyState" style="text-align: center; padding: 30px 20px; color: #64748B; font-weight: 600;">
+                Nenhuma movimentação registrada ainda.
+            </div>
+            
+            <div class="transaction-list" id="transList">
+                <!-- Javascript renderiza itens aqui -->
+            </div>
+
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn-action secondary" onclick="resetAllData()">↺ Reiniciar Mês (Zerar tudo)</button>
+                <button class="btn-action" onclick="generateSyncLink()" style="background-color: var(--theme-medium); border-color: var(--theme-dark); box-shadow: 4px 4px 0px var(--theme-dark);">
+                    📱 Salvar / Gerar Link de Sincronização
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        const STORAGE_INCOME = 'promover_fin_income';
+        const STORAGE_TRANS = 'promover_fin_trans';
+        
+        // Estado da Aplicação
+        let currentIncome = parseFloat(localStorage.getItem(STORAGE_INCOME)) || 0;
+        let transactions = JSON.parse(localStorage.getItem(STORAGE_TRANS)) || [];
+        
+        let audioInitialized = false;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedData = urlParams.get('sync');
+        if (sharedData) {
+            try {
+                const parsed = JSON.parse(decodeURIComponent(atob(sharedData)));
+                if (parsed.income !== undefined && parsed.transactions) {
+                    currentIncome = parsed.income;
+                    transactions = parsed.transactions;
+                    saveData();
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    setTimeout(() => showAlert("✅ Dados sincronizados com sucesso!", "success"), 500);
+                }
+            } catch (e) {
+                console.error("Erro ao sincronizar dados", e);
+            }
+        }
+
+        async function initAudio() {
+            if (!audioInitialized && window.Tone) {
+                await Tone.start();
+                audioInitialized = true;
+            }
+        }
+
+        function playSound(type) {
+            if (!audioInitialized || !window.Tone) return;
+            const synth = new Tone.Synth().toDestination();
+            if (type === 'coin') {
+                synth.triggerAttackRelease("E5", "16n");
+            } else if (type === 'success') {
+                synth.triggerAttackRelease("C5", "8n");
+                setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 150);
+                setTimeout(() => synth.triggerAttackRelease("G5", "4n"), 300);
+            } else if (type === 'error') {
+                synth.triggerAttackRelease("C4", "8n");
+                setTimeout(() => synth.triggerAttackRelease("G3", "4n"), 150);
+            }
+        }
+
+        function triggerConfetti() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#10B981', '#059669', '#34D399', '#F59E0B']
+                });
+            }
+        }
+
+        function showAlert(message, type = 'warning') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                if (container.contains(toast)) container.removeChild(toast);
+            }, 3500);
+        }
+
+        function formatMoney(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function setMode(mode) {
+            const views = ['viewExplanation', 'viewPractice'];
+            views.forEach(v => document.getElementById(v).style.display = 'none');
+            
+            if(mode === 'explanation') {
+                document.getElementById('viewExplanation').style.display = 'flex';
+                document.getElementById('btnExp').classList.add('active');
+                document.getElementById('btnPrac').classList.remove('active');
+            } else if (mode === 'practice') {
+                document.getElementById('viewPractice').style.display = 'flex';
+                document.getElementById('btnExp').classList.remove('active');
+                document.getElementById('btnPrac').classList.add('active');
+                updateDashboard();
+            }
+            window.scrollTo(0,0);
+        }
+
+        function updateIncome() {
+            const input = document.getElementById('incomeInput').value;
+            currentIncome = parseFloat(input) || 0;
+            saveData();
+            updateDashboard();
+        }
+
+        function addTransaction() {
+            initAudio();
+            const descInput = document.getElementById('transDesc');
+            const catInput = document.getElementById('transCategory');
+            const valInput = document.getElementById('transValue');
+
+            const desc = descInput.value.trim();
+            const cat = catInput.value;
+            const val = parseFloat(valInput.value);
+
+            if (!desc || isNaN(val) || val <= 0) {
+                showAlert("Preencha o que foi comprado e um valor válido.");
+                playSound('error');
+                return;
+            }
+
+            const newTrans = {
+                id: Date.now(),
+                desc: desc,
+                cat: cat,
+                value: val,
+                date: new Date().toLocaleDateString('pt-BR')
+            };
+
+            transactions.unshift(newTrans); // Adiciona no início
+            saveData();
+            
+            // Gamificação: Se guardou no futuro, solta confete!
+            if (cat === '20') {
+                triggerConfetti();
+                playSound('success');
+                showAlert(`Bela escolha! R$ ${val} garantidos para o seu futuro.`, 'success');
+            } else {
+                playSound('coin');
+            }
+
+            descInput.value = '';
+            valInput.value = '';
+            updateDashboard();
+        }
+
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveData();
+            updateDashboard();
+        }
+
+        function resetAllData() {
+            if(confirm("Tem certeza que deseja apagar toda a renda e histórico do mês?")) {
+                currentIncome = 0;
+                transactions = [];
+                document.getElementById('incomeInput').value = '';
+                saveData();
+                updateDashboard();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_INCOME, currentIncome.toString());
+            localStorage.setItem(STORAGE_TRANS, JSON.stringify(transactions));
+        }
+
+        function updateDashboard() {
+            document.getElementById('incomeInput').value = currentIncome > 0 ? currentIncome : '';
+
+            // Limites Máximos baseados na regra 50-30-20
+            const max50 = currentIncome * 0.50;
+            const max30 = currentIncome * 0.30;
+            const max20 = currentIncome * 0.20;
+
+            // Calcula gastos/aportes de cada pote
+            let spent50 = 0, spent30 = 0, saved20 = 0;
+
+            transactions.forEach(t => {
+                if(t.cat === '50') spent50 += t.value;
+                if(t.cat === '30') spent30 += t.value;
+                if(t.cat === '20') saved20 += t.value; // O Pote 20 é positivo (guardado)
+            });
+
+            // Atualiza Textos
+            document.getElementById('amt-50').textContent = formatMoney(max50);
+            document.getElementById('amt-30').textContent = formatMoney(max30);
+            document.getElementById('amt-20').textContent = formatMoney(max20);
+
+            const left50 = max50 - spent50;
+            const left30 = max30 - spent30;
+            
+            document.getElementById('left-50').textContent = `Disponível: ${formatMoney(left50)}`;
+            document.getElementById('left-50').style.color = left50 < 0 ? 'var(--wrong-border)' : '';
+            
+            document.getElementById('left-30').textContent = `Disponível: ${formatMoney(left30)}`;
+            document.getElementById('left-30').style.color = left30 < 0 ? 'var(--wrong-border)' : '';
+
+            document.getElementById('left-20').textContent = `Guardado: ${formatMoney(saved20)}`;
+
+            // Atualiza Barras de Progresso
+            updateBar('bar-50', spent50, max50);
+            updateBar('bar-30', spent30, max30);
+            updateBar('bar-20', saved20, max20); // Barra do futuro enche pra frente
+
+            renderList();
+        }
+
+        function updateBar(barId, current, max) {
+            const bar = document.getElementById(barId);
+            if (max === 0) {
+                bar.style.width = '0%';
+                bar.classList.remove('progress-over');
+                return;
+            }
+            
+            let pct = (current / max) * 100;
+            if (pct > 100) {
+                pct = 100;
+                if(barId !== 'bar-20') bar.classList.add('progress-over'); // Estourou o orçamento (exceto se guardou a mais no futuro)
+            } else {
+                bar.classList.remove('progress-over');
+            }
+            bar.style.width = `${pct}%`;
+        }
+
+        function renderList() {
+            const list = document.getElementById('transList');
+            const emptyState = document.getElementById('emptyState');
+            
+            list.innerHTML = '';
+            
+            if (transactions.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+
+            transactions.forEach(t => {
+                let catName = "", catClass = "", valClass = "", sign = "-";
+                if(t.cat === '50') { catName = 'Necessidade'; catClass = 'cat-tag-50'; valClass = 'val-negative'; }
+                if(t.cat === '30') { catName = 'Desejo'; catClass = 'cat-tag-30'; valClass = 'val-negative'; }
+                if(t.cat === '20') { catName = 'Investimento'; catClass = 'cat-tag-20'; valClass = 'val-positive'; sign = "+"; }
+
+                const div = document.createElement('div');
+                div.className = 'transaction-item';
+                div.innerHTML = `
+                    <div class="trans-info">
+                        <span class="trans-title">${t.desc}</span>
+                        <div><span class="trans-cat ${catClass}">${catName}</span> <span style="font-size:0.75rem; color:#94A3B8; margin-left:5px;">${t.date}</span></div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <span class="trans-value ${valClass}">${sign} ${formatMoney(t.value)}</span>
+                        <button class="btn-delete" onclick="deleteTransaction(${t.id})" title="Apagar">✕</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function generateSyncLink() {
+            if (currentIncome === 0 && transactions.length === 0) {
+                showAlert("Não há dados para salvar ainda!");
+                return;
+            }
+            
+            const data = { income: currentIncome, transactions: transactions };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+            const url = window.location.origin + window.location.pathname + '?sync=' + encoded;
+            
+            const el = document.createElement('textarea');
+            el.value = url;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            showAlert("✅ Link copiado! Cole no seu celular ou envie para você mesmo para não perder os dados.", "success");
+        }
+
+        // Init App
+        setMode('explanation');
+
+    </script>
+</body>
+</html>
