@@ -5,24 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Promover | Mentoria Educacional Premium</title>
     
-    <!-- Tipografia Neo-Brutalista: Space Grotesk para Títulos, Inter para Textos -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* ==========================================================================
-           TEMA NEO-BRUTALISTA - VARIÁVEIS DE DESIGN TOKENS
-           ========================================================================== */
         :root {
             --color-bg: #FDFBF7;       /* Off-white quente */
             --color-black: #0A0A0A;    /* Preto profundo */
             --color-white: #FFFFFF;
             
-            --color-primary: #FFD23F;  /* Amarelo Elétrico (Atenção/CTA) */
-            --color-secondary: #FF6B6B;/* Rosa Coral (Destaque/Urgência) */
-            --color-tertiary: #74B9FF; /* Azul Celeste (Confiança/Estrutura) */
+            --color-primary: #FFD23F;  /* Amarelo Elétrico */
+            --color-secondary: #FF6B6B;/* Rosa Coral */
+            --color-tertiary: #74B9FF; /* Azul Celeste */
             --color-success: #00C853;  /* Verde Whatsapp */
+            --color-purple: #9D74FF;   /* Roxo Elementos */
 
             --border-heavy: 4px solid var(--color-black);
             --border-medium: 3px solid var(--color-black);
@@ -32,9 +29,6 @@
             --shadow-hard-md: 6px 6px 0px 0px var(--color-black);
             --shadow-hard-sm: 4px 4px 0px 0px var(--color-black);
             
-            --radius-none: 0px;
-            --radius-sm: 4px;
-            
             --font-heading: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             
@@ -42,9 +36,6 @@
             --spacing-section: clamp(4rem, 8vw, 8rem);
         }
 
-        /* ==========================================================================
-           RESET E BASE
-           ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -67,9 +58,6 @@
             margin: 0 auto;
         }
 
-        /* ==========================================================================
-           COMPONENTES - BOTÕES NEO-BRUTALISTAS
-           ========================================================================== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -84,7 +72,6 @@
             color: var(--color-black);
             background: var(--color-white);
             border: var(--border-medium);
-            border-radius: var(--radius-none); /* Sem bordas arredondadas no Brutalismo raiz */
             box-shadow: var(--shadow-hard-md);
             cursor: pointer;
             transition: all 0.15s ease-out;
@@ -93,18 +80,6 @@
             z-index: 1;
         }
 
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.2);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover::after { opacity: 1; }
-
-        /* Estado "Pressionado" tátil */
         .btn:active {
             transform: translate(4px, 4px);
             box-shadow: 2px 2px 0px 0px var(--color-black);
@@ -113,17 +88,13 @@
         .btn-primary { background-color: var(--color-primary); }
         .btn-whatsapp { background-color: var(--color-success); color: var(--color-white); }
         .btn-secondary { background-color: var(--color-tertiary); }
-        
         .btn-sm { padding: 10px 20px; font-size: 0.9rem; }
 
-        /* ==========================================================================
-           TAGS E BADGES
-           ========================================================================== */
         .badge {
             display: inline-block;
             font-family: var(--font-heading);
             font-size: 0.875rem;
-            font-weight: 700;
+            font-weight: 900;
             text-transform: uppercase;
             padding: 6px 12px;
             border: var(--border-light);
@@ -132,9 +103,6 @@
         }
         .badge-alert { background: var(--color-secondary); color: var(--color-white); }
 
-        /* ==========================================================================
-           LAYOUT - HEADER
-           ========================================================================== */
         header {
             background: var(--color-bg);
             border-bottom: var(--border-heavy);
@@ -148,58 +116,79 @@
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
+            position: relative;
         }
 
         .logo {
             display: block;
             width: 100%;
-            max-width: 320px; /* Logo dominante no mobile */
+            max-width: 380px; /* Grande no mobile */
             transition: transform 0.2s ease;
+            z-index: 2;
         }
 
         .logo:hover { transform: scale(1.02) rotate(-1deg); }
 
         @media (min-width: 768px) {
             .header-inner {
-                flex-direction: row;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                align-items: center;
             }
             .logo {
-                max-width: 400px; /* Logo gigante no desktop */
+                grid-column: 2;
+                max-width: 500px; /* Gigante no Desktop */
+                margin: 0 auto;
+            }
+            .nav-header {
+                grid-column: 3;
+                display: flex;
+                justify-content: flex-end;
             }
         }
 
-        /* ==========================================================================
-           LAYOUT - HERO SECTION (Acima da Dobra)
-           ========================================================================== */
         .hero {
             padding: var(--spacing-section) 0;
             border-bottom: var(--border-heavy);
-            background-color: var(--color-tertiary);
-            background-image: radial-gradient(var(--color-black) 1px, transparent 1px);
-            background-size: 24px 24px; /* Grid background */
+            background-color: var(--color-bg); /* Fundo claro */
             position: relative;
             overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Canvas ocupa tudo e fica no fundo */
+        #physics-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            cursor: crosshair;
         }
 
         .hero-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 3rem;
-            align-items: center;
+            position: relative;
+            z-index: 2; /* Fica acima do Canvas */
+            pointer-events: none; /* Permite clicar no canvas através de áreas vazias */
         }
 
         .hero-content {
-            background: var(--color-bg);
+            background: var(--color-white);
             border: var(--border-heavy);
             padding: 2.5rem;
             box-shadow: var(--shadow-hard-lg);
-            position: relative;
-            z-index: 2;
+            max-width: 700px;
+            pointer-events: auto; /* Reativa cliques dentro da caixa */
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2.2rem, 5vw, 4rem);
             letter-spacing: -0.03em;
             margin: 1.5rem 0;
             color: var(--color-black);
@@ -214,11 +203,10 @@
         }
 
         .hero p.lead {
-            font-size: clamp(1.125rem, 2vw, 1.35rem);
+            font-size: clamp(1.125rem, 2vw, 1.25rem);
             font-weight: 500;
             margin-bottom: 2.5rem;
             color: #333;
-            max-width: 90%;
         }
 
         .hero-cta-group {
@@ -227,51 +215,10 @@
             gap: 1rem;
         }
 
-        .hero-visual {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Ilustração Vetorial CSS/SVG embutida */
-        .hero-illustration {
-            width: 100%;
-            max-width: 450px;
-            aspect-ratio: 1 / 1;
-            background: var(--color-secondary);
-            border: var(--border-heavy);
-            box-shadow: var(--shadow-hard-lg);
-            position: relative;
-            transform: rotate(2deg);
-            overflow: hidden;
-        }
-
-        .hero-illustration::before {
-            content: '';
-            position: absolute;
-            top: 10%; left: 10%; right: 10%; bottom: 10%;
-            background: var(--color-white);
-            border: var(--border-heavy);
-            border-radius: 50%;
-        }
-        
-        .hero-illustration svg {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60%; height: 60%;
-        }
-
         @media (min-width: 992px) {
-            .hero-grid { grid-template-columns: 1.2fr 0.8fr; }
             .hero-cta-group { flex-direction: row; }
         }
 
-        /* ==========================================================================
-           TICKER (Letreiro Dinâmico)
-           ========================================================================== */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
@@ -284,170 +231,108 @@
             font-weight: 900;
             text-transform: uppercase;
             white-space: nowrap;
-            box-sizing: content-box;
         }
-
         .ticker {
             display: inline-block;
             padding-left: 100%;
             animation: ticker 25s linear infinite;
         }
-
         .ticker-item {
             display: inline-block;
             padding: 0 2rem;
         }
-
         .ticker-item::after {
             content: '✦';
             padding-left: 2rem;
             color: var(--color-white);
         }
-
         @keyframes ticker {
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* ==========================================================================
-           SEÇÃO DE DOR / PROBLEMA (Agitation)
-           ========================================================================== */
-        .pain-section {
-            padding: var(--spacing-section) 0;
-            background-color: var(--color-bg);
-            border-bottom: var(--border-heavy);
-        }
-
-        .section-header {
-            max-width: 800px;
-            margin-bottom: 4rem;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 1.5rem;
-        }
-
-        .grid-cards {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        /* Estrutura de Card Neo-Brutalista */
+        .section-padding { padding: var(--spacing-section) 0; border-bottom: var(--border-heavy); }
+        .bg-white { background-color: var(--color-white); }
+        .bg-offwhite { background-color: var(--color-bg); }
+        
+        .section-header { max-width: 800px; margin-bottom: 4rem; }
+        .section-header h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1.5rem; }
+        
+        .grid-cards { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+        
         .card {
-            background: var(--color-white);
+            background: var(--color-bg);
             border: var(--border-heavy);
             padding: 2.5rem;
             box-shadow: var(--shadow-hard-md);
             position: relative;
             transition: transform 0.2s ease;
+            height: 100%;
         }
-
         .card:hover { transform: translateY(-4px) translateX(-4px); box-shadow: var(--shadow-hard-lg); }
+        
+        .card h3 { font-size: 1.5rem; margin: 1rem 0; font-weight: 900; }
+        .card p { color: #333; font-size: 1.05rem; font-weight: 500; }
 
         .card-icon {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             background: var(--color-black);
             color: var(--color-white);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: var(--font-heading);
-            font-size: 1.5rem;
-            font-weight: 900;
-            border: var(--border-light);
+            font-size: 1.8rem;
+            border: var(--border-heavy);
             box-shadow: var(--shadow-hard-sm);
             margin-bottom: 1.5rem;
             position: absolute;
-            top: -30px; left: 30px;
+            top: -32px; right: 30px;
+            transform: rotate(5deg);
         }
 
-        .card-accent-1 { background-color: var(--color-primary); color: var(--color-black); }
-        .card-accent-2 { background-color: var(--color-secondary); }
-        .card-accent-3 { background-color: var(--color-tertiary); color: var(--color-black); }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin: 1rem 0;
-        }
-
-        .card p {
-            color: #444;
-            font-size: 1.05rem;
-        }
+        .c-1 { background-color: var(--color-tertiary); color: var(--color-black); }
+        .c-2 { background-color: var(--color-secondary); color: var(--color-white); }
+        .c-3 { background-color: var(--color-primary); color: var(--color-black); }
+        .c-4 { background-color: var(--color-purple); color: var(--color-white); }
 
         @media (min-width: 768px) {
-            .grid-cards { grid-template-columns: repeat(3, 1fr); }
-            .card { padding-top: 3.5rem; } /* Espaço para o ícone flutuante */
+            .grid-cards { grid-template-columns: repeat(2, 1fr); gap: 3rem 2rem; }
+            .card { padding-top: 3rem; }
         }
 
-        /* ==========================================================================
-           SEÇÃO DA SOLUÇÃO (Mechanism)
-           ========================================================================== */
-        .solution-section {
-            padding: var(--spacing-section) 0;
-            background-color: var(--color-white);
-            border-bottom: var(--border-heavy);
-        }
-
-        .method-grid {
+        .agreement-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .method-visual {
-            background: var(--color-black);
-            padding: 2rem;
+            gap: 0;
             border: var(--border-heavy);
             box-shadow: var(--shadow-hard-lg);
-            color: var(--color-white);
-            transform: rotate(-1deg);
         }
-
-        .method-list {
-            margin-top: 2rem;
-        }
-
-        .method-list li {
-            font-family: var(--font-heading);
-            font-size: 1.25rem;
-            padding: 1.5rem 0;
-            border-bottom: 2px dashed #444;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .method-list li::before {
-            content: '✓';
-            color: var(--color-primary);
-            font-size: 1.5rem;
-            font-weight: 900;
-        }
+        
+        .agreement-panel { padding: 4rem 3rem; }
+        .panel-parents { background-color: var(--color-black); color: var(--color-white); }
+        .panel-students { background-color: var(--color-tertiary); color: var(--color-black); }
+        
+        .agreement-panel h3 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+        .agreement-panel p { font-size: 1.15rem; font-weight: 500; opacity: 0.9; }
 
         @media (min-width: 992px) {
-            .method-grid { grid-template-columns: 1fr 1fr; }
+            .agreement-grid { grid-template-columns: 1fr 1fr; }
+            .panel-parents { border-right: var(--border-heavy); }
         }
 
-        /* ==========================================================================
-           CALL TO ACTION FINAL (Frictionless Action)
-           ========================================================================== */
         .cta-section {
             padding: var(--spacing-section) 0;
             background-color: var(--color-primary);
             text-align: center;
-            background-image: repeating-linear-gradient(45deg, var(--color-black) 25%, transparent 25%, transparent 75%, var(--color-black) 75%, var(--color-black)), repeating-linear-gradient(45deg, var(--color-black) 25%, var(--color-primary) 25%, var(--color-primary) 75%, var(--color-black) 75%, var(--color-black));
-            background-position: 0 0, 10px 10px;
-            background-size: 20px 20px;
+            background-image: radial-gradient(var(--color-black) 2px, transparent 2px);
+            background-size: 30px 30px;
             border-bottom: var(--border-heavy);
         }
-
+        
         .cta-box {
-            background: var(--color-bg);
+            background: var(--color-white);
             border: var(--border-heavy);
             padding: 4rem 2rem;
             box-shadow: 16px 16px 0px 0px var(--color-black);
@@ -455,20 +340,6 @@
             margin: 0 auto;
         }
 
-        .cta-box h2 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 1rem;
-        }
-
-        .cta-box p {
-            font-size: 1.25rem;
-            margin-bottom: 3rem;
-            font-weight: 500;
-        }
-
-        /* ==========================================================================
-           FOOTER
-           ========================================================================== */
         footer {
             background: var(--color-black);
             color: var(--color-white);
@@ -477,18 +348,12 @@
             font-family: var(--font-heading);
         }
 
-        /* ==========================================================================
-           UTILITIES & ANIMATIONS
-           ========================================================================== */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -496,11 +361,10 @@
     <header>
         <div class="container header-inner">
             <a href="#" class="logo">
-                <!-- A Logo original mantida e maximizada -->
                 <img src="logo.png" alt="Projeto Promover">
             </a>
             
-            <nav>
+            <nav class="nav-header">
                 <a href="turmas.html" class="btn btn-sm btn-secondary">
                     Área do Aluno 🎓
                 </a>
@@ -510,31 +374,21 @@
 
     <main>
         <section class="hero">
+            <!-- O Canvas agora ocupa toda a seção e fica atrás do texto -->
+            <canvas id="physics-canvas"></canvas>
+            
             <div class="container hero-grid">
                 <div class="hero-content reveal">
-                    <span class="badge badge-alert">Matrículas 2026 Abertas</span>
+                    <span class="badge badge-alert" style="margin-bottom: 1.5rem; transform: rotate(-2deg);">Diagnóstico 2026</span>
                     
-                    <!-- Copywright focado em benefício final (Outcome Driven) -->
                     <h1>O fim das notas baixas e do <span>estresse na tarefa.</span></h1>
                     
-                    <p class="lead">Uma mentoria educacional High-Ticket para alunos do 6º ao 9º ano. Nós assumimos a rotina de estudos para que sua família recupere a paz.</p>
+                    <p class="lead">Esqueça o decoreba. Ajudamos alunos do 6º ao 9º ano a estudarem do jeito certo, absorvendo o conteúdo de verdade e recuperando o tempo livre da família.</p>
                     
                     <div class="hero-cta-group">
-                        <a href="https://wa.me/5585992621003?text=Quero%20agendar%20uma%20avalia%C3%A7%C3%A3o%20para%20meu%20filho(a)" target="_blank" class="btn btn-primary" style="width: 100%;">
-                            Garantir Avaliação Gratuita
+                        <a href="#diagnostico" class="btn btn-primary" style="width: 100%;">
+                            Entender a Metodologia
                         </a>
-                    </div>
-                </div>
-
-                <div class="hero-visual reveal" style="transition-delay: 0.2s;">
-                    <!-- Ilustração Brutalista Geométrica (Substitui imagens pesadas) -->
-                    <div class="hero-illustration">
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Símbolo de Crescimento/Cérebro abstrato -->
-                            <path d="M50 10 L90 50 L50 90 L10 50 Z" fill="#FFD23F" stroke="#0A0A0A" stroke-width="4"/>
-                            <circle cx="50" cy="50" r="20" fill="#74B9FF" stroke="#0A0A0A" stroke-width="4"/>
-                            <path d="M50 30 L50 70 M30 50 L70 50" stroke="#0A0A0A" stroke-width="6" stroke-linecap="square"/>
-                        </svg>
                     </div>
                 </div>
             </div>
@@ -542,82 +396,102 @@
 
         <div class="ticker-wrap">
             <div class="ticker">
-                <div class="ticker-item">Método Personalizado</div>
-                <div class="ticker-item">Foco em Autonomia</div>
-                <div class="ticker-item">Acompanhamento Individual</div>
-                <div class="ticker-item">Resultados Reais</div>
-                <div class="ticker-item">Mentoria Educacional</div>
+                <div class="ticker-item">Gestão de Foco</div>
+                <div class="ticker-item">Recordação Ativa</div>
+                <div class="ticker-item">Fim do Decoreba</div>
+                <div class="ticker-item">Autonomia</div>
+                <div class="ticker-item">Rotina de Estudos</div>
                 <!-- Duplicate for seamless loop -->
-                <div class="ticker-item">Método Personalizado</div>
-                <div class="ticker-item">Foco em Autonomia</div>
-                <div class="ticker-item">Acompanhamento Individual</div>
-                <div class="ticker-item">Resultados Reais</div>
-                <div class="ticker-item">Mentoria Educacional</div>
+                <div class="ticker-item">Gestão de Foco</div>
+                <div class="ticker-item">Recordação Ativa</div>
+                <div class="ticker-item">Fim do Decoreba</div>
+                <div class="ticker-item">Autonomia</div>
+                <div class="ticker-item">Rotina de Estudos</div>
             </div>
         </div>
 
-        <section class="pain-section">
+        <section class="section-padding bg-offwhite">
             <div class="container">
                 <div class="section-header reveal">
                     <h2>Por que aulas particulares comuns falham?</h2>
-                    <p class="lead">Aulas de reforço tradicionais tratam o sintoma (a prova de amanhã), não a causa. Nós construímos a fundação para o sucesso a longo prazo.</p>
+                    <p class="lead">A transição do 6º ao 9º ano é brutal. O volume de matérias dobra, mas a escola ensina o que estudar, não <strong>COMO</strong> estudar.</p>
                 </div>
 
                 <div class="grid-cards">
                     <div class="card reveal">
-                        <div class="card-icon card-accent-1">01</div>
-                        <h3>Diagnóstico Cirúrgico</h3>
-                        <p>Não damos aula no escuro. Mapeamos exatamente onde estão as lacunas de aprendizado, atacando a raiz da dificuldade escolar.</p>
+                        <div class="card-icon c-1">❌</div>
+                        <h3>O Ciclo da Frustração</h3>
+                        <p>O aluno faz reforço na quinta, decora tudo, passa na prova de sexta e esquece na segunda-feira. O método tradicional cria dependência e joga dinheiro fora.</p>
                     </div>
 
                     <div class="card reveal" style="transition-delay: 0.15s;">
-                        <div class="card-icon card-accent-2">02</div>
-                        <h3>Terceirização da Cobrança</h3>
-                        <p>Fim das brigas. Nós assumimos a responsabilidade pela organização e execução das tarefas. O tempo em casa volta a ser tempo de família.</p>
+                        <div class="card-icon c-2">🧠</div>
+                        <h3>Instalando um Sistema</h3>
+                        <p>O Projeto Promover não é um band-aid para a prova de amanhã. Nós somos um treinamento de alta performance para o cérebro focado em longo prazo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding bg-white">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2>O Nosso Arsenal</h2>
+                    <p class="lead">Ferramentas práticas para o aluno aprender a aprender, sem linguagem infantil.</p>
+                </div>
+
+                <div class="grid-cards">
+                    <div class="card reveal">
+                        <div class="card-icon c-3">⏱️</div>
+                        <h3>Gestão de Foco</h3>
+                        <p>Fim das 3 horas fingindo que lê com o celular do lado. Ensinamos blocos de tempo curtos, porém com 100% de concentração absoluta. Menos tempo, mais resultado.</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.1s;">
+                        <div class="card-icon c-4">📝</div>
+                        <h3>Recordação Ativa</h3>
+                        <p>Pintar o caderno com marca-texto não funciona. Ensinamos o cérebro a buscar a informação ativamente, forçando a memorização definitiva para não dar "branco".</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.2s;">
+                        <div class="card-icon c-1">🔄</div>
+                        <h3>Repetição Espaçada</h3>
+                        <p>O cérebro deleta o que não usa. Com o espaçamento estratégico das revisões, combatemos a curva de esquecimento, blindando o conteúdo.</p>
                     </div>
 
                     <div class="card reveal" style="transition-delay: 0.3s;">
-                        <div class="card-icon card-accent-3">03</div>
-                        <h3>Construção de Autonomia</h3>
-                        <p>O objetivo final não é prender o aluno a nós, mas ensiná-lo a aprender sozinho, criando hábitos de estudo que duram para a vida toda.</p>
+                        <div class="card-icon c-2">🧩</div>
+                        <h3>Fatiamento (Chunking)</h3>
+                        <p>Transformamos blocos assustadores de conteúdo de História ou Geografia em "fatias" lógicas e digeríveis, eliminando a ansiedade antes de estudar.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="solution-section">
-            <div class="container method-grid">
-                <div class="method-content reveal">
-                    <h2>Mais que reforço. Um ecossistema de aprovação.</h2>
-                    <p class="lead" style="margin-top: 1.5rem;">Nosso método exclusivo para alunos do Ensino Fundamental II (6º ao 9º ano) combina didática de excelência com gestão emocional.</p>
-                    
-                    <ul class="method-list">
-                        <li>Planejamento de Estudos Individualizado</li>
-                        <li>Feedback Constante para os Pais</li>
-                        <li>Ambiente Focado e Sem Distrações</li>
-                        <li>Resgate da Autoconfiança do Aluno</li>
-                    </ul>
-                </div>
-                
-                <div class="method-visual reveal" style="transition-delay: 0.2s;">
-                    <!-- Placeholder visual forte em substituição a imagens stock -->
-                    <div style="border: 4px solid #fff; padding: 2rem; text-align: center;">
-                        <div style="font-size: 5rem; margin-bottom: 1rem;">🎯</div>
-                        <h3 style="font-size: 2rem; text-transform: uppercase;">Aprovação Garantida<br>pelo Método</h3>
+        <section class="section-padding bg-offwhite">
+            <div class="container reveal">
+                <div class="agreement-grid">
+                    <div class="agreement-panel panel-parents">
+                        <h3>Para a Família</h3>
+                        <p>Terceirize a cobrança. Você volta a ser pai/mãe, apoia e curte o tempo livre, enquanto nós assumimos o papel técnico de organizar a rotina escolar do seu filho.</p>
+                    </div>
+                    <div class="agreement-panel panel-students">
+                        <h3>Para o Aluno</h3>
+                        <p>Se você seguir o método, garantimos que você vai estudar menos horas, mas com inteligência. Acabaram as cobranças chatas e o peso de não saber por onde começar.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="cta-section">
+        <section id="diagnostico" class="cta-section">
             <div class="container">
                 <div class="cta-box reveal">
-                    <span class="badge" style="margin-bottom: 1.5rem;">Vagas Limitadas</span>
-                    <h2>Pronto para transformar a rotina da sua casa?</h2>
-                    <p>Agende uma avaliação diagnóstica sem compromisso e entenda como podemos ajudar seu filho.</p>
+                    <span class="badge" style="margin-bottom: 1.5rem; background: var(--color-black); color: var(--color-white); transform: rotate(-2deg);">Passo 01</span>
+                    <h2>Toda mudança começa com um diagnóstico.</h2>
+                    <p>Não existe fórmula mágica. Antes de qualquer matrícula, precisamos entender as reais lacunas de aprendizagem. Agende um papo honesto e sem compromisso.</p>
                     
-                    <a href="https://wa.me/5585992621003?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o%20para%20o%20Projeto%20Promover." target="_blank" class="btn btn-whatsapp" style="width: 100%; max-width: 400px;">
-                        Falar no WhatsApp
+                    <a href="https://wa.me/5585992621003?text=Ol%C3%A1!%20Li%20o%20site%20e%20gostaria%20de%20agendar%20a%20Avalia%C3%A7%C3%A3o%20Diagn%C3%B3stica%20para%20entender%20o%20m%C3%A9todo." target="_blank" class="btn btn-whatsapp" style="width: 100%; max-width: 450px; font-size: 1.25rem; padding: 20px;">
+                        Agendar Diagnóstico
                     </a>
                 </div>
             </div>
@@ -626,33 +500,191 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Projeto Promover. Excelência em Mentoria Educacional.</p>
+            <p>&copy; 2026 Projeto Promover. Mentoria em Produtividade e Aprendizagem.</p>
         </div>
     </footer>
 
     <script>
-        // Scroll Reveal Lógica Optimizada
+        // 1. SCROLL REVEAL ANIMATION
         document.addEventListener("DOMContentLoaded", () => {
             const reveals = document.querySelectorAll(".reveal");
-
-            const observerOptions = {
-                threshold: 0.1, // Dispara quando 10% do elemento está visível
-                rootMargin: "0px 0px -50px 0px"
-            };
+            const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
 
             const revealOnScroll = new IntersectionObserver(function(entries, observer) {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add("active");
-                        observer.unobserve(entry.target); // Anima apenas uma vez para performance
+                        observer.unobserve(entry.target); 
                     }
                 });
             }, observerOptions);
 
-            reveals.forEach(reveal => {
-                revealOnScroll.observe(reveal);
-            });
+            reveals.forEach(reveal => revealOnScroll.observe(reveal));
         });
+
+        // 2. CANVAS INTERATIVO: ELEMENTOS EDUCACIONAIS ESPALHADOS NA TELA
+        window.onload = function() {
+            const canvas = document.getElementById('physics-canvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            // O Canvas agora pega o tamanho total da section .hero
+            function resizeCanvas() {
+                const parent = canvas.parentElement;
+                width = parent.clientWidth;
+                height = parent.clientHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Interação Mouse/Touch
+            const pointer = { x: null, y: null, radius: 150 }; // Raio de repulsão um pouco maior
+
+            function updatePointer(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                pointer.x = clientX - rect.left;
+                pointer.y = clientY - rect.top;
+            }
+
+            // Ouve eventos diretamente na window para não ser bloqueado pela div
+            window.addEventListener('mousemove', updatePointer);
+            window.addEventListener('touchmove', updatePointer, {passive: true});
+            window.addEventListener('mouseleave', () => { pointer.x = null; pointer.y = null; });
+            window.addEventListener('touchend', () => { pointer.x = null; pointer.y = null; });
+
+            // Símbolos Educacionais Lúdicos
+            const itemsList = [
+                { text: 'E=mc²', color: '#FFD23F', size: 45 }, // Amarelo
+                { text: 'π', color: '#FF6B6B', size: 60 },      // Rosa
+                { text: '√x', color: '#74B9FF', size: 50 },    // Azul
+                { text: 'A+B', color: '#00C853', size: 40 },   // Verde
+                { text: '⚛️', color: '#9D74FF', size: 55 },    // Átomo
+                { text: '🧠', color: '#FFD23F', size: 50 },    // Cérebro
+                { text: '%', color: '#9D74FF', size: 60 },      // Porcentagem
+                { text: 'f(x)', color: '#FF6B6B', size: 40 }   // Função
+            ];
+
+            const entities = [];
+
+            class PhysicsEntity {
+                constructor(data) {
+                    this.text = data.text;
+                    this.color = data.color;
+                    this.size = data.size;
+                    
+                    // Começa espalhado por toda a tela
+                    this.x = Math.random() * (width - 100) + 50;
+                    this.y = Math.random() * (height - 100) + 50;
+                    
+                    // Velocidade leve
+                    this.vx = (Math.random() - 0.5) * 1.5;
+                    this.vy = (Math.random() - 0.5) * 1.5;
+                    
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.vAngle = (Math.random() - 0.5) * 0.03;
+                }
+
+                update() {
+                    this.angle += this.vAngle;
+
+                    // Colisão nas bordas da tela inteira
+                    const hitBox = this.size / 1.5; 
+                    if (this.x - hitBox < 0) { this.x = hitBox; this.vx *= -1; }
+                    if (this.x + hitBox > width) { this.x = width - hitBox; this.vx *= -1; }
+                    if (this.y - hitBox < 0) { this.y = hitBox; this.vy *= -1; }
+                    if (this.y + hitBox > height) { this.y = height - hitBox; this.vy *= -1; }
+
+                    // Interação com o Mouse (Repulsão)
+                    if (pointer.x != null && pointer.y != null) {
+                        let dx = pointer.x - this.x;
+                        let dy = pointer.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < pointer.radius) {
+                            const forceDirectionX = dx / distance;
+                            const forceDirectionY = dy / distance;
+                            const force = (pointer.radius - distance) / pointer.radius;
+                            
+                            this.vx -= forceDirectionX * force * 1.5;
+                            this.vy -= forceDirectionY * force * 1.5;
+                            this.vAngle += (Math.random() - 0.5) * 0.1; 
+                        }
+                    }
+
+                    // Limite de velocidade
+                    const maxSpeed = 4;
+                    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                    if(speed > maxSpeed) {
+                        this.vx = (this.vx / speed) * maxSpeed;
+                        this.vy = (this.vy / speed) * maxSpeed;
+                    }
+                    
+                    this.vx *= 0.99;
+                    this.vy *= 0.99;
+                    this.vAngle *= 0.98;
+
+                    if(Math.abs(this.vx) < 0.3) this.vx += (Math.random()-0.5)*0.3;
+                    if(Math.abs(this.vy) < 0.3) this.vy += (Math.random()-0.5)*0.3;
+
+                    this.x += this.vx;
+                    this.y += this.vy;
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.angle);
+                    
+                    ctx.font = `900 ${this.size}px "Space Grotesk", sans-serif`;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    
+                    // Bordas pretas brutalistas nos icones
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "#0A0A0A";
+                    ctx.strokeText(this.text, 0, 0);
+                    
+                    ctx.fillStyle = this.color;
+                    ctx.fillText(this.text, 0, 0);
+                    
+                    ctx.restore();
+                }
+            }
+
+            // Triplicando a quantidade de itens para preencher a tela inteira
+            itemsList.forEach(data => entities.push(new PhysicsEntity(data)));
+            itemsList.forEach(data => entities.push(new PhysicsEntity(data)));
+            itemsList.forEach(data => entities.push(new PhysicsEntity(data)));
+
+            function animate() {
+                // Fundo limpo para evitar rastro
+                ctx.clearRect(0, 0, width, height);
+
+                // Grid pontilhado sutil de fundo para dar ar "científico"
+                ctx.fillStyle = "rgba(10, 10, 10, 0.03)";
+                for(let i=0; i<width; i+=30) {
+                    for(let j=0; j<height; j+=30) {
+                        ctx.beginPath();
+                        ctx.arc(i, j, 1.5, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                }
+
+                entities.forEach(entity => {
+                    entity.update();
+                    entity.draw();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        };
     </script>
 </body>
 </html>
