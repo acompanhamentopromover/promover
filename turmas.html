@@ -3,25 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promover - Reforço Escolar</title>
+    <title>Área do Aluno | Projeto Promover</title>
     
+    <!-- Tipografia Neo-Brutalista -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* Reset básico e Variáveis */
         :root {
-            --bg-color: #F8F9FA;
-            --text-color: #2D3748;
-            --border-color: #000000;
+            --color-bg: #FDFBF7;       /* Off-white quente */
+            --color-black: #0A0A0A;    /* Preto profundo */
+            --color-white: #FFFFFF;
             
-            /* Cores inspiradas na sua imagem de referência */
-            --blue-pastel: #D0EFFF;
-            --pink-pastel: #FFE5EC;
-            --yellow-pastel: #FFF6D6;
-            --green-pastel: #E0F5E9;
-            --blue-btn: #2B9AF3;
+            /* Cores Específicas por Matéria */
+            --color-mat: #74B9FF;      /* Azul Celeste */
+            --color-port: #FF6B6B;     /* Rosa Coral */
+            --color-bio: #00C853;      /* Verde Esmeralda */
+            --color-fis: #FFD23F;      /* Amarelo Elétrico */
+            --color-qui: #9D74FF;      /* Roxo Neon */
+            --color-ifce: #0A0A0A;     /* Preto (Destaque Premium) */
+
+            --border-heavy: 3px solid var(--color-black);
+            --shadow-hard: 6px 6px 0px 0px var(--color-black);
+            
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -31,159 +38,223 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--color-bg);
+            color: var(--color-black);
+            font-family: var(--font-body);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            /* Padrão de fundo neo-brutalista sutil */
+            background-image: radial-gradient(#d3d3d3 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        /* Container principal - Limita a largura em telas grandes para manter o visual de app */
         .container {
             width: 100%;
-            max-width: 480px; /* Simula a largura de um mobile mesmo no PC */
+            max-width: 500px; /* Mantém o formato Mobile mesmo no Desktop */
             display: flex;
             flex-direction: column;
-            gap: 24px;
-            margin-top: 20px;
+            gap: 32px;
+            margin-top: 2vh;
         }
 
-        /* Cabeçalho */
         header {
             text-align: center;
-            margin-bottom: 10px;
+            background: var(--color-white);
+            padding: 24px;
+            border: var(--border-heavy);
+            box-shadow: 8px 8px 0px 0px var(--color-black);
+            position: relative;
+        }
+
+        header::before {
+            content: 'ÁREA DO ALUNO';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-black);
+            color: var(--color-white);
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
         h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-color);
-            line-height: 1.2;
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1.1;
             margin-bottom: 8px;
+            letter-spacing: -0.03em;
         }
 
         .subtitle {
             font-size: 1rem;
-            color: #555;
-            font-weight: 400;
+            font-weight: 500;
+            color: #444;
         }
 
-        /* Grid de Botões/Cards */
         .menu-grid {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
-        /* Estilo dos Cards (Botões) */
         .grade-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
-            color: var(--text-color);
+            color: var(--color-black);
             padding: 20px 24px;
-            border-radius: 16px;
-            border: 2px solid var(--border-color);
-            background-color: white;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            box-shadow: 4px 4px 0px var(--border-color); /* Sombra sólida estilo cartoon */
+            border: var(--border-heavy);
+            background-color: var(--color-white);
+            transition: all 0.15s ease-out;
+            box-shadow: var(--shadow-hard);
             position: relative;
             overflow: hidden;
+            font-family: var(--font-heading);
         }
 
-        /* Interatividade */
+        /* Micro-interação tátil ao clicar */
         .grade-card:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px var(--border-color);
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px 0px var(--color-black);
         }
 
-        /* Conteúdo interno do card */
         .card-content {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
         }
 
         .icon-box {
-            font-size: 1.8rem;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--color-white);
+            border: 2px solid var(--color-black);
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px var(--color-black);
         }
 
         .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: 1.35rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
         }
 
         .arrow-icon {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--text-color);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--color-black);
+            transition: transform 0.2s;
         }
 
-        /* Variações de Cores (Classes modificadoras) */
-        .bg-blue { background-color: var(--blue-pastel); }
-        .bg-pink { background-color: var(--pink-pastel); }
-        .bg-yellow { background-color: var(--yellow-pastel); }
-        .bg-green { background-color: var(--green-pastel); }
+        .grade-card:hover .arrow-icon {
+            transform: translateX(4px);
+        }
 
-        /* Rodapé simples */
+        .bg-mat { background-color: var(--color-mat); }
+        .bg-port { background-color: var(--color-port); }
+        .bg-bio { background-color: var(--color-bio); }
+        .bg-fis { background-color: var(--color-fis); }
+        .bg-qui { background-color: var(--color-qui); }
+        
+        /* Destaque Especial para a Preparação IFCE */
+        .bg-ifce { 
+            background-color: var(--color-ifce); 
+            color: var(--color-white);
+        }
+        .bg-ifce .card-title, .bg-ifce .arrow-icon { color: var(--color-white); }
+        .bg-ifce .icon-box { background-color: var(--color-mat); color: var(--color-black); }
+
         footer {
             margin-top: auto;
-            padding-top: 40px;
-            font-size: 0.8rem;
-            color: #888;
+            padding: 40px 0 20px 0;
+            font-size: 0.875rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: var(--color-black);
             text-align: center;
+            text-transform: uppercase;
         }
-
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>Promover<br><span style="font-size: 1.2rem; font-weight: 500;">Reforço Escolar</span></h1>
-            <p class="subtitle">Escolha sua série para começar a estudar</p>
+            <h1>O que vamos<br>estudar hoje?</h1>
+            <p class="subtitle">Selecione a disciplina para acessar os materiais.</p>
         </header>
 
         <main class="menu-grid">
-            <a href="https://acompanhamentopromover.github.io/6/index.html" class="grade-card bg-blue">
+            
+            <a href="https://acompanhamentopromover.github.io/mat/" class="grade-card bg-mat">
                 <div class="card-content">
-                    <span class="icon-box">🚀</span>
-                    <span class="card-title">6º Ano</span>
+                    <span class="icon-box">📐</span>
+                    <span class="card-title">Matemática</span>
                 </div>
-                <span class="arrow-icon">➜</span>
+                <span class="arrow-icon">➔</span>
             </a>
 
-            <a href="7ano.html" class="grade-card bg-pink">
+            <a href="https://edu666777.github.io/port/" class="grade-card bg-port">
                 <div class="card-content">
-                    <span class="icon-box">📚</span>
-                    <span class="card-title">7º Ano</span>
+                    <span class="icon-box">📖</span>
+                    <span class="card-title">Português</span>
                 </div>
-                <span class="arrow-icon">➜</span>
+                <span class="arrow-icon">➔</span>
             </a>
 
-            <a href="8ano.html" class="grade-card bg-yellow">
+            <a href="https://edu666777.github.io/biopromover/index.html" class="grade-card bg-bio">
                 <div class="card-content">
-                    <span class="icon-box">💡</span>
-                    <span class="card-title">8º Ano</span>
+                    <span class="icon-box">🧬</span>
+                    <span class="card-title">Biologia</span>
                 </div>
-                <span class="arrow-icon">➜</span>
+                <span class="arrow-icon">➔</span>
             </a>
 
-            <a href="9ano.html" class="grade-card bg-green">
+            <a href="https://edu666777.github.io/fispromover/" class="grade-card bg-fis">
+                <div class="card-content">
+                    <span class="icon-box">⚛️</span>
+                    <span class="card-title">Física</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </a>
+
+            <a href="https://edu666777.github.io/quipromover/" class="grade-card bg-qui">
+                <div class="card-content">
+                    <span class="icon-box">🧪</span>
+                    <span class="card-title">Química</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </a>
+
+            <!-- Destaque especial para o curso de Provas IFCE -->
+            <a href="https://acompanhamentopromover.github.io/9/provas-ifce.html" class="grade-card bg-ifce" style="margin-top: 10px;">
                 <div class="card-content">
                     <span class="icon-box">🎓</span>
-                    <span class="card-title">9º Ano</span>
+                    <span class="card-title">Provas IFCE</span>
                 </div>
-                <span class="arrow-icon">➜</span>
+                <span class="arrow-icon">➔</span>
             </a>
+
         </main>
 
         <footer>
-            © 2026 Promover Educação
+            © 2026 Projeto Promover
         </footer>
     </div>
 
