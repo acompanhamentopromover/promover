@@ -76,26 +76,36 @@
 
         header {
             background: var(--surface);
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: var(--border-width) solid var(--border-color);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo img { height: 40px; }
-
-        .hero {
-            position: relative;
-            min-height: 100vh;
+            padding: 1.5rem 5%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 100px 5% 4rem; /* Top padding para o header fixo */
+            align-items: center;
+            gap: 1.2rem;
+            border-bottom: var(--border-width) solid var(--border-color);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo { display: inline-block; }
+        
+        .logo img { 
+            height: clamp(65px, 12vw, 95px); /* Tamanho muito maior e responsivo */
+            transition: transform 0.3s ease;
+            object-fit: contain;
+        }
+        
+        .logo:hover img { 
+            transform: scale(1.05); /* Efeito de destaque */
+        }
+
+        .hero {
+            position: relative;
+            min-height: calc(100vh - 130px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 5% 4rem;
             background-color: var(--surface);
             border-bottom: var(--border-width) solid var(--border-color);
             overflow: hidden;
@@ -109,7 +119,7 @@
             height: 100%;
             z-index: 1;
             opacity: 0.8;
-            pointer-events: auto; /* Permite interacao */
+            pointer-events: auto;
         }
 
         .hero-content {
@@ -301,6 +311,20 @@
         }
 
         @media (min-width: 768px) {
+            header { 
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                align-items: center;
+                padding: 1.2rem 5%; 
+            }
+            .logo {
+                grid-column: 2;
+                justify-self: center;
+            }
+            header .btn-primary {
+                grid-column: 3;
+                justify-self: end;
+            }
             .hero-btns { flex-direction: row; justify-content: center; }
             .grid-cards { grid-template-columns: repeat(3, 1fr); }
             .hero-content { padding: 4rem; }
@@ -311,6 +335,7 @@
 
     <header>
         <a href="#" class="logo">
+            <!-- Mantenha sua logo original aqui -->
             <img src="logo.png" alt="Projeto Promover">
         </a>
         <a href="turmas.html" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">
@@ -320,6 +345,7 @@
 
     <main>
         <section class="hero">
+            <!-- Canvas de Fundo (Conexões) -->
             <canvas id="networkCanvas"></canvas>
             
             <div class="hero-content reveal">
@@ -339,13 +365,11 @@
 
         <div class="marquee-wrapper">
             <div class="marquee-content">
-                <!-- Conteudo duplicado para criar o loop infinito -->
                 <div class="marquee-item">Método Personalizado</div>
                 <div class="marquee-item">Resultados Comprovados</div>
                 <div class="marquee-item">Foco em Autonomia</div>
                 <div class="marquee-item">Acompanhamento Individual</div>
                 <div class="marquee-item">Do 6º ao 9º Ano</div>
-                <!-- Duplicata -->
                 <div class="marquee-item">Método Personalizado</div>
                 <div class="marquee-item">Resultados Comprovados</div>
                 <div class="marquee-item">Foco em Autonomia</div>
@@ -397,7 +421,7 @@
     </footer>
 
     <script>
-        // 1. Logica do Scroll Reveal (Animacoes na rolagem)
+        // Lógica do Scroll Reveal (Animações na rolagem)
         document.addEventListener("DOMContentLoaded", () => {
             const reveals = document.querySelectorAll(".reveal");
             const observer = new IntersectionObserver((entries) => {
@@ -411,13 +435,13 @@
             reveals.forEach(reveal => observer.observe(reveal));
         });
 
-        // 2. Logica do Canvas Interativo (Conexoes Neo-Brutalistas)
+        // Lógica do Canvas Interativo (Simulação de Conexões de Aprendizado)
         window.onload = function() {
             const canvas = document.getElementById('networkCanvas');
             const ctx = canvas.getContext('2d');
             let particles = [];
             
-            // Controle de Mouse/Touch
+            // Controle de Mouse/Touch para interação
             let mouse = { x: null, y: null, radius: 100 };
 
             function resize() {
@@ -428,7 +452,7 @@
             window.addEventListener('resize', resize);
             resize();
 
-            // Atualiza posicao do mouse/touch
+            // Atualiza posição do mouse/touch
             canvas.addEventListener('mousemove', (e) => {
                 const rect = canvas.getBoundingClientRect();
                 mouse.x = e.clientX - rect.left;
@@ -478,15 +502,14 @@
                 }
 
                 update() {
-                    // Movimento natural
                     this.x += this.vx;
                     this.y += this.vy;
 
-                    // Rebater nas bordas
+                    // Rebater nas bordas da tela
                     if (this.x > canvas.width || this.x < 0) this.vx = -this.vx;
                     if (this.y > canvas.height || this.y < 0) this.vy = -this.vy;
 
-                    // Interação com Mouse/Touch (Repelir)
+                    // Interação: O mouse/dedo repele as partículas
                     if (mouse.x != null) {
                         let dx = mouse.x - this.x;
                         let dy = mouse.y - this.y;
@@ -508,7 +531,7 @@
 
             function init() {
                 particles = [];
-                // Menos particulas em telas menores para melhor performance
+                // Cria menos partículas em celulares para economizar bateria e garantir performance fluida
                 let numParticles = window.innerWidth < 768 ? 20 : 40;
                 for (let i = 0; i < numParticles; i++) {
                     particles.push(new Particle());
@@ -518,7 +541,7 @@
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Desenha linhas conectando particulas proximas
+                // Desenha as linhas conectando as partículas próximas
                 for (let a = 0; a < particles.length; a++) {
                     for (let b = a; b < particles.length; b++) {
                         let dx = particles[a].x - particles[b].x;
@@ -536,7 +559,6 @@
                     }
                 }
 
-                // Atualiza e desenha formas
                 for (let i = 0; i < particles.length; i++) {
                     particles[i].update();
                     particles[i].draw();
